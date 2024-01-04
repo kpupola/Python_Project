@@ -31,8 +31,13 @@ def populate_grid(saraksts):
     return
 
 def get_user_input():
-    #Atgriež sarakstu ar lietotāja ievadītiem vārdiem
-    return
+    word_list = []
+    while True:
+        word = input("Ievadiet vārdu (vai 'viss', lai pabeigtu): ").strip().lower()
+        if word == 'viss':
+            break
+    word_list.append(word)
+    return word_list
 
 def main():
     lietotaja_saraksts = get_user_input()
