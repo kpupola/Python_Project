@@ -18,10 +18,13 @@ def place_word(vards, burta_indekss, rezga_indekss):
     #Ievieto vārdu režģī noteiktā vietā
     return
 
-def is_vertical(rezga_indekss):
-    #Atgriež True, ja vārds režģī ir vertikāls
-    #(Nav atrunāta situācija, ja iedotais indekss ir vārdu krustpunktam)
-    return
+def is_vertical(GRID_SIZE, row, col):
+    if 0 <= row < len(GRID_SIZE) and 0 <= col < len(GRID_SIZE[0]):
+        if row > 0 and GRID_SIZE[row - 1][col] != " ":
+            return True
+        if row < len(GRID_SIZE) - 1 and GRID_SIZE[row + 1][col] != " ":
+            return True
+    return False
 
 def populate_grid(saraksts):
     #Ievieto dotā saraksta vārdus režģī
