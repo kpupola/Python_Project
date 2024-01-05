@@ -1,7 +1,9 @@
 import random
+import numpy as np
 
 GRID_SIZE = 40
 
+# Funkcija, kas randomizē sarakstu
 def shuffle_words(saraksts):
     random.shuffle(saraksts)
     return saraksts
@@ -9,19 +11,19 @@ def shuffle_words(saraksts):
 def fill_grid(rezgis): #????????
     #Atgriež aizpildītu režģi
     for rinda in rezgis:
-        for kolonna in rezgis:
+        for kolonna in rinda:
             indekss_str = ''
-            for burts in [rinda][kolonna]:
+            for burts in rezgis[rinda][kolonna]:
                 indekss_str = indekss_str + ' ' + str(burts)
     return rezgis
 
 def print_grid(rezgis):
     #Izprintē režģi konsolē
+    print(rezgis[0])
     for rinda in rezgis:
-        rinda_str = ''
-        for burts in rinda:
-            rinda_str = rinda_str + ' ' + str(burts)
-        print(rinda_str)
+        for kolonna in rinda:
+            print(kolonna, end=" ")
+        print()
 
 # Funkcijas check_word_placement() parametri ir:
     # rezgis – divdimensionāls masīvs, kurš satur vārdus un ' ' tur, kur nav vārdu
@@ -51,7 +53,7 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
     
     # pārbauda, vai vārda garums neiziet ārpus režģa
     for i in range(varda_garums):
-        if vertikals:
+        if not vertikals:
             if varda_sakums_rinda + i >= GRID_SIZE: #iziet cauri x jeb rindu indeksiem uz leju
                 print("vārds iet pāri robežai uz leju") #pagaidām testēšanas nolūkiem izprintē, kur rodas kļūda
                 check = False
@@ -64,7 +66,7 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
     
     #pārbauda, vai vārds nepārklājas nelegāli ar citiem vārdiem
     for i in range(varda_garums):
-        if vertikals:
+        if not vertikals:
             if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna] != ' ' and rezgis[varda_sakums_rinda + i][varda_sakums_kolonna] != vards[i]:
                 print("vārds nelegāli pārklājas vertikāli")
                 check = False
@@ -77,7 +79,7 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
     
     #pārbauda, vai vārds neatrodas blakus citiem vārdiem paralēli
     for i in range(varda_garums):
-        if vertikals:
+        if not vertikals:
             #pārbauda vārdu no kreisās puses
             if varda_sakums_kolonna > 0: #pārbauda, vai vārds nav režģa kreisajā malā
                 if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna - 1] != ' ':
@@ -113,18 +115,15 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
     # rinda – rindas indekss burtam režģī, kurš sakrīt ar vards[burta_indekss]
     # kolonna – kolonnas indekss burtam režģī, kurš sakrīt ar vards[burta_indekss]
     #
-    #
     #Ievieto vārdu režģī noteiktā vietā
 def place_word(rezgis, vards, burta_indekss, rinda, kolonna):
 
     if is_vertical(rezgis, rinda, kolonna):
-        #rezgis[rinda-burta_indekss][kolonna]=vards[0]
-        for i in range(len(vards)):
-            rezgis[rinda - burta_indekss + i][kolonna] = vards[i]
-    else:
-        #rezgis[rinda][kolonna-burta_indekss]=vards[0]
         for i in range(len(vards)):
             rezgis[rinda][kolonna - burta_indekss + i] = vards[i]
+    else:
+        for i in range(len(vards)):
+            rezgis[rinda - burta_indekss + i][kolonna] = vards[i]
     return
 
 # Funkcijas is_vertical() parametri:
@@ -135,36 +134,35 @@ def place_word(rezgis, vards, burta_indekss, rinda, kolonna):
     # Atgriež True, ja vārds ir vertikāls; False, ja horizontāls
 def is_vertical(rezgis, row, col):
     if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
-        if row > 0 and rezgis[row - 1][col] != " ":
-            return True
-        if row < GRID_SIZE - 1 and rezgis[row + 1][col] != " ":
+        if col != 0:
+            if rezgis[row][col - 1] == " ":
+                return True
+        if rezgis[row][col + 1] == " ":
             return True
     return False
 
 def populate_grid(saraksts):
     #Ievieto dotā saraksta vārdus režģī, atgriež režģi
-    rezgis = [[' '] * GRID_SIZE] * GRID_SIZE #sākumā tiek izveidots tukšs režģis
+    rezgis = [[' ' for i in range(GRID_SIZE)] for j in range(GRID_SIZE)] #sākumā tiek izveidots tukšs režģis
     #Ievieto pirmo vārdu gridā 
-    pirmais_vards=saraksts[0]
-    place_word(pirmais_vards, int(len(pirmais_vards)//2), rezgis[20][20])
+    pirmais_vards = saraksts[0]
+    place_word(rezgis, pirmais_vards, 0, 10, 10)
+    print_grid(rezgis)
     saraksts.pop(0)
     
-    for vards_index in range(len(saraksts)):
-        vards=saraksts[vards_index]
-        for burta_indekss, burts in enumerate(vards):
-            for rinda in range(len(fill_grid(rezgis))):
-                for kolonna in range(len(rezgis[0])):
+    for vards_index in range(len(saraksts)): # ejam cauri sarakstam
+        vards = saraksts[vards_index]
+        for burta_indekss, burts in enumerate(vards): # ejam cauri vārdam
+            for rinda in range(GRID_SIZE):
+                for kolonna in range(GRID_SIZE):
                     if rezgis[rinda][kolonna] == burts:
-                        if is_vertical(rezgis, rinda, kolonna):
-                            vards_rezgi_vertikals=True
-                        else:
-                            vards_rezgi_vertikals=False
-                            if check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, rezgis[rinda][kolonna]):
-                                place_word(vards, burta_indekss, rezgis[rinda][kolonna])
-                                saraksts.pop(vards_index)
-                                vards_index=0
+                        if check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
+                            place_word(rezgis, vards, burta_indekss, rinda, kolonna)
+                            saraksts.pop(vards_index)
+                            vards_index -= 1
     if not saraksts:
         print('Vardi izvietoti veiksmigi')
+        print_grid(rezgis)
         return True
     else:
         return False 
@@ -176,12 +174,13 @@ def get_user_input():
         word = input("Ievadiet vārdu (vai 'viss', lai pabeigtu): ").strip().lower()
         if word == 'viss':
             break
-    word_list.append(word)
+        word_list.append(word)
     return word_list
 
 def main():
     saraksts = get_user_input()
     lietotaja_saraksts = shuffle_words(saraksts)
+    print(lietotaja_saraksts)
     populate_grid(lietotaja_saraksts)
     #print_grid(empty_grid)
     
