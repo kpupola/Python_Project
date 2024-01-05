@@ -82,26 +82,26 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
         if not vertikals:
             #pārbauda vārdu no kreisās puses
             if varda_sakums_kolonna > 0: #pārbauda, vai vārds nav režģa kreisajā malā
-                if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna - 1] != ' ':
+                if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna - 1] != ' ' and burta_indekss != i:
                     print("vārdam kreisajā pusē ir cits vārds")
                     check = False
                     break
             #pārbauda vārdu no labās puses
             if varda_sakums_kolonna + 1 < GRID_SIZE: #pārbauda, vai vārds nav režģa labajā malā
-                if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna + 1] != ' ':
+                if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna + 1] != ' ' and burta_indekss != i:
                     print("vārdam labajā pusē ir cits vārds")
                     check = False
                     break
         else:
             #pārbauda vārdu no augšas
             if varda_sakums_rinda > 0: #pārbauda, vai vārds nav režģa augšējā malā
-                if rezgis[varda_sakums_rinda - 1][varda_sakums_kolonna + i] != ' ':
+                if rezgis[varda_sakums_rinda - 1][varda_sakums_kolonna + i] != ' ' and burta_indekss != i:
                     print("vārdam augšējā pusē ir cits vārds")
                     check = False
                     break
             #pārbauda vārdu no apakšas
             if varda_sakums_rinda + 1 < GRID_SIZE: #pārbauda, vai vārds nav režģa apakšējā malā
-                if rezgis[varda_sakums_rinda + 1][varda_sakums_kolonna + i] != ' ':
+                if rezgis[varda_sakums_rinda + 1][varda_sakums_kolonna + i] != ' ' and burta_indekss != i:
                     print("vārdam apaksējā pusē ir cits vārds")
                     check = False
                     break
