@@ -1,6 +1,5 @@
 
 GRID_SIZE = 40
-empty_grid = [[0]*GRID_SIZE]*GRID_SIZE
 
 def print_grid(rezgis):
     #Izprintē režģi konsolē
@@ -12,7 +11,30 @@ def print_grid(rezgis):
 
 def check_word_placement(vards, burta_indekss, rezga_indekss):
     #Atgriež True, ja vārdu ir atļaus ievietot tajā vietā
-    return
+    #Jāpārbauda, ka 
+    # 1) vārds nepārsniedz režģa robežas
+    # 2) vārds nepārklājas ar citu vārdu neatbilstošiem burtiem
+    # 3) vārds neatrodas blakus citiem vārdiem paralēli
+
+    vertikals = is_vertical(rezga_indekss)
+    varda_garums = len(vards)
+    check = True
+    #vārda sākuma indeksa noteikšana
+    if vertikals: 
+        varda_sakums = [rezga_indekss[0] - burta_indekss, rezga_indekss[1]]
+    else:
+        varda_sakums = [rezga_indekss[0], rezga_indekss[1] - burta_indekss]
+    
+    # pārbauda, vai vārda garums neiziet ārpus režģa
+    for i in range(varda_garums):
+        if vertikals:
+            if varda_sakums[0 + i] >= GRID_SIZE or varda_sakums[1 + i] >= GRID_SIZE:
+                check = False
+                break
+    
+
+
+    return check
 
 def place_word(vards, burta_indekss, rezga_indekss):
     #Ievieto vārdu režģī noteiktā vietā
@@ -24,7 +46,8 @@ def is_vertical(rezga_indekss):
     return
 
 def populate_grid(saraksts):
-    #Ievieto dotā saraksta vārdus režģī
+    #Ievieto dotā saraksta vārdus režģī, atgriež režģi
+    rezgis = [[' '] * GRID_SIZE] * GRID_SIZE #sākumā tiek izveidots tukšs režģis
     return
 
 def get_user_input():
@@ -33,8 +56,7 @@ def get_user_input():
 
 def main():
     lietotaja_saraksts = get_user_input()
-    populate_grid(lietotaja_saraksts)
-    print_grid(empty_grid)
+    print(populate_grid(lietotaja_saraksts))
 
 if __name__ == "__main__":
     main()
