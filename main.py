@@ -7,6 +7,15 @@ def shuffle_words(saraksts):
     random.shuffle(saraksts)
     return saraksts
 
+def fill_grid(rezgis):
+    #Atgriež aizpildītu režģi
+    for rinda in rezgis:
+        for kolonna in rezgis:
+            indekss_str = ''
+            for burts in [rinda][kolonna]:
+                indekss_str = indekss_str + ' ' + str(burts)
+    return rezgis
+
 def print_grid(rezgis):
     #Izprintē režģi konsolē
     for rinda in rezgis:
@@ -23,11 +32,11 @@ def place_word(vards, burta_indekss, rezga_indekss):
     #Ievieto vārdu režģī noteiktā vietā
     return
 
-def is_vertical(GRID_SIZE, row, col):
-    if 0 <= row < len(GRID_SIZE) and 0 <= col < len(GRID_SIZE[0]):
-        if row > 0 and GRID_SIZE[row - 1][col] != " ":
+def is_vertical(rezgis, row, col):
+    if 0 <= row < len(rezgis) and 0 <= col < len(rezgis[0]):
+        if row > 0 and rezgis[row - 1][col] != " ":
             return True
-        if row < len(GRID_SIZE) - 1 and GRID_SIZE[row + 1][col] != " ":
+        if row < len(rezgis) - 1 and rezgis[row + 1][col] != " ":
             return True
     return False
 
@@ -35,15 +44,15 @@ def populate_grid(saraksts):
     for vards_index in range(len(saraksts)):
         vards=saraksts[vards_index]
         for burta_indekss, burts in enumerate(vards):
-            for rinda in range(len(GRID_SIZE)):
-                for kolonna in range(len(GRID_SIZE[0])):
-                    if GRID_SIZE[rinda][kolonna] == burts:
-                        if is_vertical(GRID_SIZE, rinda, kolonna):
+            for rinda in range(len(fill_grid(empty_grid))):
+                for kolonna in range(len(empty_grid[0])):
+                    if empty_grid[rinda][kolonna] == burts:
+                        if is_vertical(empty_grid, rinda, kolonna):
                             vards_rezgi_vertikals=True
                         else:
                             vards_rezgi_vertikals=False
-                            if check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, GRID_SIZE[rinda][kolonna]):
-                                place_word(vards, burta_indekss, GRID_SIZE[rinda][kolonna])
+                            if check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, empty_grid[rinda][kolonna]):
+                                place_word(vards, burta_indekss, empty_grid[rinda][kolonna])
                                 saraksts.pop(vards_index)
                                 vards_index=0
     if not saraksts:
