@@ -32,7 +32,8 @@ def is_vertical(GRID_SIZE, row, col):
     return False
 
 def populate_grid(saraksts):
-    for vards in saraksts:
+    for vards_index in range(len(saraksts)):
+        vards=saraksts[vards_index]
         for burta_indekss, burts in enumerate(vards):
             for rinda in range(len(GRID_SIZE)):
                 for kolonna in range(len(GRID_SIZE[0])):
