@@ -78,6 +78,11 @@ def is_vertical(rezgis, row, col):
 def populate_grid(saraksts):
     #Ievieto dotā saraksta vārdus režģī, atgriež režģi
     rezgis = [[' '] * GRID_SIZE] * GRID_SIZE #sākumā tiek izveidots tukšs režģis
+    #Ievieto pirmo vārdu gridā 
+    pirmais_vards=saraksts[0]
+    place_word(pirmais_vards, int(len(pirmais_vards)//2), rezgis[20][20])
+    saraksts.pop(0)
+    
     for vards_index in range(len(saraksts)):
         vards=saraksts[vards_index]
         for burta_indekss, burts in enumerate(vards):
