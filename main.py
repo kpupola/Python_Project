@@ -54,9 +54,18 @@ def check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, rezga_inde
 
     return check
 
-def place_word(vards, burta_indekss, rezga_indekss):
+def place_word(vards, burta_indekss, rezgis, rinda, kolonna):
+    #rinda un kolonna ir matching burta pozīcija
     #Ievieto vārdu režģī noteiktā vietā
-    return
+    if is_vertical(rezgis, rinda, kolonna):
+        rezgis[rinda-burta_indekss][kolonna]=vards[0]
+        for i in range(1, len(vards)):
+            rezgis[rinda + i][kolonna] = vards[i]
+                    
+    else:
+        rezgis[rinda][kolonna-burta_indekss]=vards[0]
+        for i in range(1, len(vards)):
+            rezgis[rinda][kolonna + i] = vards[i]
 
 def is_vertical(rezgis, row, col):
     if 0 <= row < len(rezgis) and 0 <= col < len(rezgis[0]):
