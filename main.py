@@ -72,15 +72,15 @@ def populate_grid(saraksts):
     for vards_index in range(len(saraksts)):
         vards=saraksts[vards_index]
         for burta_indekss, burts in enumerate(vards):
-            for rinda in range(len(fill_grid(empty_grid))):
-                for kolonna in range(len(empty_grid[0])):
-                    if empty_grid[rinda][kolonna] == burts:
-                        if is_vertical(empty_grid, rinda, kolonna):
+            for rinda in range(len(fill_grid(rezgis))):
+                for kolonna in range(len(rezgis[0])):
+                    if rezgis[rinda][kolonna] == burts:
+                        if is_vertical(rezgis, rinda, kolonna):
                             vards_rezgi_vertikals=True
                         else:
                             vards_rezgi_vertikals=False
-                            if check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, empty_grid[rinda][kolonna]):
-                                place_word(vards, burta_indekss, empty_grid[rinda][kolonna])
+                            if check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, rezgis[rinda][kolonna]):
+                                place_word(vards, burta_indekss, rezgis[rinda][kolonna])
                                 saraksts.pop(vards_index)
                                 vards_index=0
     if not saraksts:
