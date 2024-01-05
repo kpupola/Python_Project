@@ -1,6 +1,11 @@
+import random
 
 GRID_SIZE = 40
 empty_grid = [[0]*GRID_SIZE]*GRID_SIZE
+
+def shuffle_words(saraksts):
+    random.shuffle(saraksts)
+    return saraksts
 
 def print_grid(rezgis):
     #Izprintē režģi konsolē
@@ -57,7 +62,8 @@ def get_user_input():
     return word_list
 
 def main():
-    lietotaja_saraksts = get_user_input()
+    saraksts = get_user_input()
+    lietotaja_saraksts = shuffle_words(saraksts)
     populate_grid(lietotaja_saraksts)
     print_grid(empty_grid)
     
