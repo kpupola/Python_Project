@@ -10,7 +10,7 @@ def print_grid(rezgis):
             rinda_str = rinda_str + ' ' + str(burts)
         print(rinda_str)
 
-def check_word_placement(vards, burta_indekss, rezga_indekss):
+def check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, rezga_indekss):
     #Atgriež True, ja vārdu ir atļaus ievietot tajā vietā
     return
 
@@ -27,8 +27,25 @@ def is_vertical(GRID_SIZE, row, col):
     return False
 
 def populate_grid(saraksts):
-    #Ievieto dotā saraksta vārdus režģī
-    return
+    for vards in saraksts:
+        for burta_indekss, burts in enumerate(vards):
+            for rinda in range(len(GRID_SIZE)):
+                for kolonna in range(len(GRID_SIZE[0])):
+                    if GRID_SIZE[rinda][kolonna] == burts:
+                        if is_vertical(GRID_SIZE, rinda, kolonna):
+                            vards_rezgi_vertikals=True
+                        else:
+                            vards_rezgi_vertikals=False
+                            if check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, GRID_SIZE[rinda][kolonna]):
+                                place_word(vards, burta_indekss, GRID_SIZE[rinda][kolonna])
+                                saraksts.pop(vards)
+                                vards=0
+    if not saraksts:
+        print('Vardi izvietoti veiksmigi')
+        return True
+    else:
+        return False 
+    
 
 def get_user_input():
     word_list = []
@@ -43,6 +60,6 @@ def main():
     lietotaja_saraksts = get_user_input()
     populate_grid(lietotaja_saraksts)
     print_grid(empty_grid)
-
+    
 if __name__ == "__main__":
     main()
