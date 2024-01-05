@@ -44,8 +44,8 @@ def populate_grid(saraksts):
                             vards_rezgi_vertikals=False
                             if check_word_placement(vards_rezgi_vertikals, vards, burta_indekss, GRID_SIZE[rinda][kolonna]):
                                 place_word(vards, burta_indekss, GRID_SIZE[rinda][kolonna])
-                                saraksts.pop(vards)
-                                vards=0
+                                saraksts.pop(vards_index)
+                                vards_index=0
     if not saraksts:
         print('Vardi izvietoti veiksmigi')
         return True
