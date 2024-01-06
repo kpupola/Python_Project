@@ -16,9 +16,6 @@ sample_dict = [
     ]
 
 def write_to_file(answer_key, title):
-    # izveido failu, ja tāda nav 
-    f = open("answer_keys.json", "w")
-    f.close()
     # pievieno dict mīklu ar atbildēm un jautājumiem
     with open("answer_keys.json", "r+") as file:
         if os.stat("answer_keys.json").st_size != 0:

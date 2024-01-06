@@ -10,5 +10,17 @@
             "answer": "bulcina",
             "question": "Labakas brokastis"
         }
+    ],
+    "cita mikla": [
+        {
+            "number": 1,
+            "answer": "dators",
+            "question": "Kur dz\u012bvo v\u012brusi"
+        },
+        {
+            "number": 2,
+            "answer": "bulcina",
+            "question": "Labakas brokastis"
+        }
     ]
 }
