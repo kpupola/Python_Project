@@ -1,0 +1,30 @@
+User interface:
+1. Atbildes un jautajumi – Katrīna
+    - atbilde jautajums jautajums?
+    - atbilde kkkas cits vfieji
+    - horizontalie un vertikalie jautajumi
+    - numeracija
+    {[0, atbilde]:[indekss, jautajums]}
+
+2. Text input grid, kas izskatas pec krustvardu miklas – Nadīna
+
+3. Lietotajs ieraksta, mes parbaudam, vai ir pareizi
+    - tur kur pareizi, iekrasojas zals, kur nepareizi – sarkans
+    - check poga
+
+4. Izveles starp dazadam krustvardu miklam
+    - poga generet citu izkartojumu
+
+5. ekranskatu plusma – Dārta
+    1. divas pogas – izveidot miklu, atrisinat miklu (aizved uz kkadu default miklu)
+        1.1 atrisinat miklu – musu default mikla kkada vai viena no lietotaja vecajam miklam
+            1.1.1 poga – atpakal uz sakumu
+            1.1.2 poga – parbaudit risinajumu
+        1.2 izveidot miklu – text input, kur jaievada atbildes un jautajumi un nosaukums
+            1.2.3 poga – izveidot rezgi
+    2. skats ar rezgi ar atbildem
+        2.1 poga – generet citu izkartojumu
+        2.2 poga – saglabat
+        2.3 poga – izveidot citu miklu (atgriezties uz 1. skatu)
+        2.4 poga – spelet so miklu (aizved uz 1.1 skatu)
+
