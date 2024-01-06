@@ -8,6 +8,9 @@ def generate_puzzle_view(parent_window):
     window = tk.Toplevel(root)
     window.minsize(500, 500)
 
+    f = tk.Frame(window)
+    f.pack()
+
     #TODO: parāda izveidotu režģi un ir poga, ar kuru var uzģenerēt citus variantus
     window.mainloop()
     return
