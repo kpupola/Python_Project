@@ -204,13 +204,17 @@ def get_user_input():
         if word == 'viss':
             break
         word_list.append(word)
+
     return word_list
 
 def main():
     saraksts = get_user_input()
-    for i in range(len(saraksts) + int(len(saraksts)/2)):
-        lietotaja_saraksts = shuffle_words(saraksts.copy())
-        populate_grid(lietotaja_saraksts)
+    if not saraksts:
+        print('Saraksts ir tukss, ievadiet kadu vardu!')
+    else:
+        for i in range(len(saraksts) + int(len(saraksts)/2)):
+            lietotaja_saraksts = shuffle_words(saraksts.copy())
+            populate_grid(lietotaja_saraksts)
     #print_grid(empty_grid)
     
 if __name__ == "__main__":
