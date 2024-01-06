@@ -2,7 +2,9 @@ import tkinter as tk
 from main import *
 from handle_json import *
 
-def generate_puzzle_view():
+def generate_puzzle_view(parent_window):
+    parent_window.destroy() # aizver iepriekšējo logu
+
     window = tk.Toplevel(root)
     window.minsize(500, 500)
 
@@ -14,13 +16,21 @@ def create_puzzle_view():
     window = tk.Toplevel(root)
     window.minsize(500, 500)
 
-    #TODO: user text input ar atbildēm un jautājumiem
-    ievadi_vardus_label = tk.Label(window, text="Ievadi atbildes un jautājumus zemāk!\nIevadi atsevišķu atbildi un jautājumu jaunā rindiņā.")
-    ievade = tk.Entry(window)
+    f = tk.Frame(window)
+    f.pack()
 
-    ievadi_vardus_label.pack()
-    ievade.pack()
-    #window.mainloop()
+    #TODO: user text input ar atbildēm un jautājumiem
+    ievadi_vardus_label = tk.Label(f, text="Ievadi atbildes un jautājumus zemāk!\nIevadi atsevišķu atbildi un jautājumu jaunā rindiņā.\nFormāts: atbilde[atstarpe]jautājums")
+    ievadi_vardus_label.grid(row=0, column=0)
+    xscrollbar = tk.Scrollbar(f, orient="horizontal")
+    xscrollbar.grid(row=2, column=0, sticky='NSEW')
+    ievade = tk.Text(f, height=12, width=45, wrap="none", xscrollcommand=xscrollbar.set)
+    ievade.grid(row=1, column=0)
+
+    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: generate_puzzle_view(window))
+    izveidot_poga.grid(row=3, column=0)
+
+    window.mainloop()
     return
 
 def choose_puzzle_view():
