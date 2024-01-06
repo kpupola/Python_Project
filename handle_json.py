@@ -2,6 +2,8 @@ from main import *
 import json
 import os
 
+file_name = "answer_keys.json"
+
 sample_dict = [
     {
         "number" : 1,
@@ -17,8 +19,8 @@ sample_dict = [
 
 def write_to_file(answer_key, title):
     # pievieno dict mīklu ar atbildēm un jautājumiem
-    with open("answer_keys.json", "r+") as file:
-        if os.stat("answer_keys.json").st_size != 0:
+    with open(file_name, "r+") as file:
+        if os.stat(file_name).st_size != 0:
             file_data = json.load(file)
             if title not in file_data:
                 file_data[title] = answer_key
@@ -32,5 +34,20 @@ def write_to_file(answer_key, title):
             json.dump(dict, file, indent=4)
     return True
 
-write_to_file(sample_dict, "cita mikla")
-write_to_file(sample_dict, "vel kkas")
+def return_keys():
+    # atgriež sarakstu ar krustvārdu mīklu nosaukumiem, kas saglabāti failā
+    keys = []
+    with open(file_name, "r") as f:
+        if os.stat(file_name).st_size != 0:
+            data = json.load(f)
+            keys = list(data.keys())
+    return keys
+
+def clear_file():
+    # TODO: izdzēš visus faila datus, izņemot pirmo ierakstu
+    return
+
+
+write_to_file(sample_dict, "pirmā mīkla")
+write_to_file(sample_dict, "otrā mīkla")
+print(return_keys())

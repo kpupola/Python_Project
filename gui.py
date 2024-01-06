@@ -19,13 +19,15 @@ def create_puzzle_view():
     f = tk.Frame(window)
     f.pack()
 
-    #TODO: user text input ar atbildēm un jautājumiem
+    # user text input ar atbildēm un jautājumiem
     ievadi_vardus_label = tk.Label(f, text="Ievadi atbildes un jautājumus zemāk!\nIevadi atsevišķu atbildi un jautājumu jaunā rindiņā.\nFormāts: atbilde[atstarpe]jautājums")
     ievadi_vardus_label.grid(row=0, column=0)
     xscrollbar = tk.Scrollbar(f, orient="horizontal")
     xscrollbar.grid(row=2, column=0, sticky='NSEW')
     ievade = tk.Text(f, height=12, width=45, wrap="none", xscrollcommand=xscrollbar.set)
     ievade.grid(row=1, column=0)
+    
+    # TODO: funkcija, kas ievadi pārvērš sarakstā ar vārdnīcām
 
     izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: generate_puzzle_view(window))
     izveidot_poga.grid(row=3, column=0)
@@ -38,7 +40,7 @@ def choose_puzzle_view():
     window.minsize(500, 500)
 
     #TODO: saraksts ar izveidotajām puzlēm, no kura vienu var izvēlēties
-    #window.mainloop()
+    window.mainloop()
     return
 
 def solve_puzzle_view(puzzle_title):
