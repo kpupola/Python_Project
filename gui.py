@@ -35,9 +35,13 @@ def create_puzzle_view():
     izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: generate_puzzle_view(window))
     izveidot_poga.grid(row=3, column=0)
 
+    teksts = ievade.get("1.0", tk.END)
+    vardnica = parse_input(teksts)
+    
     window.mainloop()
     return
 
+#funkcija, kas sadala lietotaja texta inputu vardnicā ar vārdiem kā keys un to values kā - numurs (sākumā nulle), jautājums
 def parse_input(text):
     lines = text.split('\n')
     dictionary = {}
