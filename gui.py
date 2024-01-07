@@ -38,6 +38,17 @@ def create_puzzle_view():
     window.mainloop()
     return
 
+def parse_input(text):
+    lines = text.split('\n')
+    dictionary = {}
+    for line in lines:
+        space_index = line.find(' ')
+        if space_index != -1:
+            word = line[:space_index]
+            question = line[space_index+1:]
+            dictionary[word] = (0, question)
+    return dictionary
+
 def choose_puzzle_view():
     window = tk.Toplevel(root)
     window.minsize(500, 500)
