@@ -16,7 +16,7 @@ User interface:
     - poga generet citu izkartojumu
 
 5. ekranskatu plusma – Dārta
-    1. divas pogas – izveidot miklu, atrisinat miklu (aizved uz kkadu default miklu)
+    1. divas pogas – izveidot miklu, atrisinat miklu (aizved uz kkadu default miklu) yes
         1.1 atrisinat miklu – musu default mikla kkada vai viena no lietotaja vecajam miklam
             1.1.1 poga – atpakal uz sakumu
             1.1.2 poga – parbaudit risinajumu
