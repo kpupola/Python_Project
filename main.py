@@ -229,7 +229,7 @@ def populate_grid(saraksts):
                                   orientation = 1
                               place_word(rezgis, vards, burta_indekss, rinda, kolonna)
                               vards_jautajums2[vards] = saraksts[vards] #pievieno otrajai vardnicai ierakstu, kas bāzēta uz konkrēto vārdu
-                              vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards][1], orientation) #nomaina ieraksta numuru uz vārda numuru
+                              vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards], orientation) #nomaina ieraksta numuru uz vārda numuru
                               varda_nr += 1
                               del saraksts[vards] #izdzēšs no pirmās vārdnīcas ierakstu, kas satur vārdu
                               vardu_saraksts.pop(vards_index) #izdzēš vārdu no vardu_saraksts
