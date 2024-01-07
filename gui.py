@@ -2,7 +2,7 @@ import tkinter as tk
 from main import *
 from handle_json import *
 
-def generate_puzzle_view(parent_window):
+def generate_puzzle_view(parent_window, ievade):
     parent_window.destroy() # aizver iepriekšējo logu
 
     window = tk.Toplevel(root)
@@ -10,6 +10,9 @@ def generate_puzzle_view(parent_window):
 
     f = tk.Frame(window)
     f.pack()
+
+    teksts = ievade.get("1.0", tk.END)
+    vardnica = parse_input(teksts)
 
     #TODO: parāda izveidotu režģi un ir poga, ar kuru var uzģenerēt citus variantus
     window.mainloop()
@@ -30,14 +33,9 @@ def create_puzzle_view():
     ievade = tk.Text(f, height=12, width=45, wrap="none", xscrollcommand=xscrollbar.set)
     ievade.grid(row=1, column=0)
 
-    # TODO: funkcija, kas ievadi pārvērš sarakstā ar vārdnīcām
-
     izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: generate_puzzle_view(window))
     izveidot_poga.grid(row=3, column=0)
 
-    teksts = ievade.get("1.0", tk.END)
-    vardnica = parse_input(teksts)
-    
     window.mainloop()
     return
 
@@ -50,7 +48,13 @@ def parse_input(text):
         if space_index != -1:
             word = line[:space_index]
             question = line[space_index+1:]
-            dictionary[word] = (0, question)
+            if dictionary and word in dictionary:
+                print("Vārds {} jau ir bijis ievietots mīklā. Lūdzu ievadiet citu vārdu!".format(word))
+            else:
+                if varda_parbaude(word) == False:
+                    print("Vārds {} nav atbilstošā izmērā. Lūdzu ievadiet citu vārdu!".format(word))
+                else:
+                    dictionary[word] = (0, 0, question)
     return dictionary
 
 def choose_puzzle_view():

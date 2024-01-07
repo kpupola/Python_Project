@@ -250,7 +250,14 @@ def get_user_input():
         if word == 'viss':
             break
         question = input ("Ievadiet vārdam atbilstošo jautājumu: ").strip().lower()
-        vards_jautajums[word] = (0, question, 0) # (nr pec kartas, jautajums, orientacija (0-horizontals, 1-vertikals))
+        # Check if the key already exists in the dictionary
+        if vards_jautajums and word in vards_jautajums:
+                print("Vārds {} jau ir bijis ievietots mīklā. Lūdzu ievadiet citu vārdu!".format(word))
+        else:
+            if varda_parbaude(word) == False:
+                print("Vārds {} nav atbilstošā izmērā. Lūdzu ievadiet citu vārdu!".format(word))
+            else:
+                vards_jautajums[word] = (0, question, 0) # (nr pec kartas, jautajums, orientacija (0-horizontals, 1-vertikals))
     return vards_jautajums
 
 def main():
