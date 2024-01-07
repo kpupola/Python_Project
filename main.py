@@ -204,6 +204,7 @@ def populate_grid(saraksts):
                               vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards][1]) #nomaina ieraksta numuru uz vārda numuru
                               varda_nr += 1
                               del saraksts[vards] #izdzēšs no pirmās vārdnīcas ierakstu, kas satur vārdu
+                              vardu_saraksts.pop(vards_index) #izdzēš vārdu no vardu_saraksts
                               print(f"Deleted word: {vards}") 
                               vards_index = vards_index - 1
                               vards_ielikts = True
