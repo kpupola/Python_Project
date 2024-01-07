@@ -1,6 +1,6 @@
 import random
 
-GRID_SIZE = 40
+GRID_SIZE = 60
 
 # Funkcija, kas randomizē sarakstu
 def shuffle_words(saraksts):
