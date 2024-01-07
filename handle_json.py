@@ -19,7 +19,7 @@ sample_dict = [
 
 def write_to_file(answer_key, title):
     # pievieno dict mīklu ar atbildēm un jautājumiem
-    with open(file_name, "r+") as file:
+    with open(file_name, "r+", encoding="utf8") as file:
         if os.stat(file_name).st_size != 0:
             file_data = json.load(file)
             if title not in file_data:
@@ -37,7 +37,7 @@ def write_to_file(answer_key, title):
 def return_keys():
     # atgriež sarakstu ar krustvārdu mīklu nosaukumiem, kas saglabāti failā
     keys = []
-    with open(file_name, "r") as f:
+    with open(file_name, "r", encoding="utf8") as f:
         if os.stat(file_name).st_size != 0:
             data = json.load(f)
             keys = list(data.keys())
