@@ -1,5 +1,4 @@
 import random
-
 GRID_SIZE = 60
 
 # Funkcija, kas randomizē sarakstu
