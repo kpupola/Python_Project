@@ -31,7 +31,8 @@ def return_grid_string(rezgis):
         rinda_str = ''
         for j in range(GRID_SIZE):
             rinda_str = rinda_str + ' ' + rezgis[i][j]
-        grid_str += rinda_str + '\n'
+        if not rinda_str.isspace():
+            grid_str += rinda_str + '\n'
     return grid_str
 
 # Funkcijas check_word_placement() parametri ir:

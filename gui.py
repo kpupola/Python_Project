@@ -10,20 +10,39 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
 
     f = tk.Frame(window)
     f.pack()
-    
+    grid_box = tk.Text(f, width=60, height=30)
+
+    #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
     saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
     return_values = populate_grid(saraksts)
-    grid_box = tk.Text(f)
+    
     if return_values:
         grid = return_values[1]
         grid_box.insert("1.0", return_grid_string(grid))
         print(return_grid_string(grid))
+        #grid_box.config(state="disabled")
         grid_box.grid(row=0, column=0)
     else:
-        grid_box.inser("1.0", "Nesanāca :(")
+        grid_box.insert("1.0", "Nesanāca :(")
+    
+    def print_rezgis():
+        grid_box.delete("1.0", tk.END)
+        #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
+        saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
+        return_values = populate_grid(saraksts)
+        
+        if return_values:
+            grid = return_values[1]
+            grid_box.insert("1.0", return_grid_string(grid))
+            print(return_grid_string(grid))
+            #grid_box.config(state="disabled")
+            grid_box.grid(row=0, column=0)
+        else:
+            grid_box.insert("1.0", "Nesanāca :(")
      
-     
-    #TODO: parāda izveidotu režģi un ir poga, ar kuru var uzģenerēt citus variantus
+    shuffle_poga = tk.Button(f, text="Izveidot citu izkārtojumu", command=print_rezgis)
+    shuffle_poga.grid(row=1, column=0)
+
     window.mainloop()
     return
 
