@@ -43,6 +43,25 @@ def return_keys():
             keys = list(data.keys())
     return keys
 
+def return_answers(puzzle_key):
+    # atgriež sarakstu ar konkrētas puzles atbildēm
+    answers = []
+    with open(file_name, "r", encoding="utf8") as f:
+        if os.stat(file_name).st_size != 0:
+            data = json.load(f)
+            for entry in data[puzzle_key]:
+                answers.append(entry["answer"])
+    return answers
+
+def return_puzzle(puzzle_key):
+    # atgriež sarakstu ar visām puzles atbildēm un jautājumiem
+    puzzle = []
+    with open(file_name, "r", encoding="utf8") as f:
+        if os.stat(file_name).st_size != 0:
+            data = json.load(f)
+            puzzle = data[puzzle_key]
+    return puzzle
+
 def clear_file():
     # TODO: izdzēš visus faila datus, izņemot pirmo ierakstu
     return
@@ -51,3 +70,5 @@ def clear_file():
 write_to_file(sample_dict, "pirmā mīkla")
 write_to_file(sample_dict, "otrā mīkla")
 print(return_keys())
+print(return_answers("Izmēģinājuma mīkla"))
+print(return_puzzle("Izmēģinājuma mīkla"))
