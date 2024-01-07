@@ -1,11 +1,21 @@
+from handle_json import *
+
 import random
 
 GRID_SIZE = 60
 
-# Funkcija, kas randomizē sarakstu
-def shuffle_words(saraksts):
-    random.shuffle(saraksts)
-    return saraksts
+# Funkcija, kas randomizē dic pēc vārda un attiecigi piekarto jaut tam blakus (pareizo)
+def shuffle_keys(saraksts):
+
+    keys = list(saraksts.keys()) #panem no vardnicas atslegas
+    random.shuffle(keys) #samaisa taas
+    
+    # Create a new dictionary with shuffled keys
+    shuffled_dict = {} #jauna vardnica shufflotajam
+    for key in keys: 
+        shuffled_dict[key] = saraksts[key]
+    
+    return shuffled_dict
 
 def print_grid(rezgis):
     #Izprintē režģi konsolē
@@ -160,62 +170,87 @@ def is_vertical(rezgis, row, col):
     return False
 
 def populate_grid(saraksts):
+
+    vards_jautajums2 = {}
+    varda_nr = 1
+
     #Ievieto dotā saraksta vārdus režģī, atgriež režģi
     rezgis = [[' ' for i in range(GRID_SIZE)] for j in range(GRID_SIZE)] #sākumā tiek izveidots tukšs režģis
-    #Ievieto pirmo vārdu gridā 
-    pirmais_vards = saraksts[0]
+    #Nosaka pirmo vārdu no vardnicas kā key 
+    pirmais_vards = next(iter(saraksts.keys()))
+    #Ievieto pirmo vārdu režģī
     place_word(rezgis, pirmais_vards, 0, 10, 10)
-    saraksts.pop(0)
+    #Nomaina pirmā vārda numuru uz 1
+    saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards][1])
+    #Pievieno pirmo ierakstu jaunas otrajam dictionarijam
+    vards_jautajums2 = {pirmais_vards: saraksts[pirmais_vards]}
+    # Izdzēšs pirmo saraksta vārdnīcas ierakstu
+    saraksts.pop(next(iter(saraksts.keys()), None), None)
     
     vards_index = 0
-    while vards_index < len(saraksts): # ejam cauri sarakstam
-        vards_ielikts = False
-        vards = saraksts[vards_index]
-        for burta_indekss, burts in enumerate(vards): # ejam cauri vārdam
-            for rinda in range(GRID_SIZE):
-                for kolonna in range(GRID_SIZE):
-                    if rezgis[rinda][kolonna] == burts:
-                        if check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
-                            place_word(rezgis, vards, burta_indekss, rinda, kolonna)
-                            saraksts.pop(vards_index)
-                            vards_index = vards_index-1
-                            vards_ielikts = True
-                            break
-                    if vards_ielikts:
-                        break
-                if vards_ielikts:
-                    break
-            if vards_ielikts:
-                break
-        vards_index += 1
+    varda_nr = 2
+    vardu_saraksts = list(saraksts.keys()) #vārdus, kas glabati kā keys, pārveido par vārdu sarakstu
+    while vards_index < len(vardu_saraksts): # ejam cauri sarakstam 
+          vards_ielikts = False
+          vards = vardu_saraksts[vards_index]
+          for burta_indekss, burts in enumerate(vards): # ejam cauri vārdam
+              for rinda in range(GRID_SIZE):
+                  for kolonna in range(GRID_SIZE):
+                      if rezgis[rinda][kolonna] == burts:
+                          print(f"Processing word: {vards}")  # Add this line
+                          if check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
+                              place_word(rezgis, vards, burta_indekss, rinda, kolonna)
+                              vards_jautajums2[vards] = saraksts[vards] #pievieno otrajai vardnicai ierakstu, kas bāzēta uz konkrēto vārdu
+                              vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards][1]) #nomaina ieraksta numuru uz vārda numuru
+                              varda_nr += 1
+                              del saraksts[vards] #izdzēšs no pirmās vārdnīcas ierakstu, kas satur vārdu
+                              print(f"Deleted word: {vards}") 
+                              vards_index = vards_index - 1
+                              vards_ielikts = True
+                              break
+                      if vards_ielikts:
+                          break
+                  if vards_ielikts:
+                      break
+              if vards_ielikts:
+                  break
+          vards_index += 1
+
     if not saraksts:
-        print('Vardi izvietoti veiksmigi')
-        print_grid(rezgis)
-        return True
+         print('Vardi izvietoti veiksmigi')
+         print(saraksts)
+         print (vards_jautajums2)
+         print_grid(rezgis)
+         return True
     else:
-        print('Nesanāca izveidot režģi')
-        return False 
+         print('Nesanāca izveidot režģi')
+         print(saraksts)
+         print (vards_jautajums2)
+         return False 
     
 
 def get_user_input():
-    word_list = []
+    #word_list = []
+    vards_jautajums = {}
     while True:
         word = input("Ievadiet vārdu (vai 'viss', lai pabeigtu): ").strip().lower()
         if word == 'viss':
             break
-        word_list.append(word)
-
-    return word_list
+        question = input ("Ievadiet vārdam atbilstošo jautājumu: ").strip().lower()
+        #word_list.append(word)
+        vards_jautajums[word] = (0, question) 
+    return vards_jautajums
 
 def main():
-    saraksts = get_user_input()
-    if not saraksts:
-        print('Saraksts ir tukss, ievadiet kadu vardu!')
+    lietotaja_saraksts = get_user_input()
+    if not lietotaja_saraksts:
+           print('Saraksts ir tukss, ievadiet kadu vardu!')
     else:
-        for i in range(len(saraksts) + int(len(saraksts)/2)):
-            lietotaja_saraksts = shuffle_words(saraksts.copy())
-            populate_grid(lietotaja_saraksts)
-    #print_grid(empty_grid)
+        for i in range(len(lietotaja_saraksts) + int(len(lietotaja_saraksts)/2)):
+             saraksts = shuffle_keys(lietotaja_saraksts.copy()) 
+             #print(saraksts)
+             populate_grid(saraksts) 
+     #print_grid(empty_grid)
     
 if __name__ == "__main__":
     main()
