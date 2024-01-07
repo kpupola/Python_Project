@@ -64,6 +64,9 @@ def return_questions(puzzle_key):
     return questions
 
 def combine_dict(answers, questions):
+    # apvieno atbilžu un jautājumu sarakstu vārdnīcā
+    # tādā formātā, kas atbilst populate_grid() funkcijai
+    
     dict = {}
     for i in range(len(answers)):
         dict[answers[i]] = questions[i]
