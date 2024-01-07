@@ -2,7 +2,7 @@ import tkinter as tk
 from main import *
 from handle_json import *
 
-def generate_puzzle_view(parent_window, ievade):
+def generate_puzzle_view(parent_window):
     parent_window.destroy() # aizver iepriekšējo logu
 
     window = tk.Toplevel(root)
@@ -10,9 +10,6 @@ def generate_puzzle_view(parent_window, ievade):
 
     f = tk.Frame(window)
     f.pack()
-
-    teksts = ievade.get("1.0", tk.END)
-    vardnica = parse_input(teksts)
 
     #TODO: parāda izveidotu režģi un ir poga, ar kuru var uzģenerēt citus variantus
     window.mainloop()
@@ -33,9 +30,14 @@ def create_puzzle_view():
     ievade = tk.Text(f, height=12, width=45, wrap="none", xscrollcommand=xscrollbar.set)
     ievade.grid(row=1, column=0)
 
+    # TODO: funkcija, kas ievadi pārvērš sarakstā ar vārdnīcām
+
     izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: generate_puzzle_view(window))
     izveidot_poga.grid(row=3, column=0)
 
+    teksts = ievade.get("1.0", tk.END)
+    vardnica = parse_input(teksts)
+    
     window.mainloop()
     return
 
@@ -48,13 +50,7 @@ def parse_input(text):
         if space_index != -1:
             word = line[:space_index]
             question = line[space_index+1:]
-            if dictionary and word in dictionary:
-                print("Vārds {} jau ir bijis ievietots mīklā. Lūdzu ievadiet citu vārdu!".format(word))
-            else:
-                if varda_parbaude(word) == False:
-                    print("Vārds {} nav atbilstošā izmērā. Lūdzu ievadiet citu vārdu!".format(word))
-                else:
-                    dictionary[word] = (0, 0, question)
+            dictionary[word] = (0, question)
     return dictionary
 
 def choose_puzzle_view():
@@ -73,19 +69,143 @@ def choose_puzzle_view():
         b.grid(row=i + 1, column=0)
     window.mainloop()
 
-def solve_puzzle_view(parent_window, puzzle_key):
-    parent_window.destroy()
-    window = tk.Toplevel(root)
-    window.minsize(500, 500)
+def solve_puzzle_view(frame, puzzle_key):
+    #    parent_window.destroy()
+     #   window = tk.Toplevel(root)
+      #  window.minsize(500, 500)
+#
+     #   
 
-    f = tk.Frame(window)
+    atbildes=return_answers(puzzle_key)
+    jautajumi=return_questions(puzzle_key)
+    vardnica=combine_dict(atbildes, jautajumi)
+    grid=populate_grid(vardnica)
+    print(vardnica)
+    
+    if not grid:
+        return
+
+    frame = tk.Toplevel(root)
+    f = tk.Frame(frame)
     f.pack()
+    
+    
+    
 
-    title_label = tk.Label(f, text="Atrisināt mīklu " + puzzle_key)
-    title_label.grid(row=0, column=0)
+    
+    
+    
+#return display_filled_windows(grid)
+#    title_label = tk.Label(f, text="Atrisināt mīklu " + puzzle_key)
+#       title_label.grid(row=0, column=0)
+    
+    #def create_window(grid, parent_window):
+    
+    def create_window(grid, parent_frame):
+        entries = []
 
+        for i, row in enumerate(grid):
+            entry_row = []
+            for j, value in enumerate(row):
+                if value != ' ':
+                    entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center")
+                    entry.insert(0, '')  # Insert the letter into the entry
+                    entry.grid(row=i, column=j, padx=1, pady=1)
+                    entry_row.append(entry)
+                else:
+                    entry_row.append('')
+            entries.append(entry_row)
+
+        return entries
+
+    def submit_entries(entries, grid, result_label):
+        # Reset background color
+        for i, row in enumerate(grid):
+            for j, value in enumerate(row):
+                if value != '':
+                    entries[i][j].config(bg="white")
+
+        entered_values = []
+        for i, row in enumerate(grid):
+            entered_row = []
+            for j, value in enumerate(row):
+                if value != '':
+                    entered_value = entries[i][j].get()
+                    entered_row.append(entered_value)
+                else:
+                    entered_row.append('')
+            entered_values.append(entered_row)
+
+        for i, row in enumerate(grid):
+            for j, value in enumerate(row):
+                if value != '' and entered_values[i][j] != value:
+                    entries[i][j].config(bg="red")
+
+        # Check for win
+        if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ''):
+            result_label.config(text="Congratulations! You win!", fg="red")
+        else:
+            result_label.config(text="Incorrect input! Try again.", fg="red")
+
+    
+
+    def display_answers(entries, grid):
+        for i, row in enumerate(grid):
+            #entry_row = []
+            for j, value in enumerate(row):
+                if value != '':
+                    entries[i][j].delete(0, tk.END)
+                    entries[i][j].insert(0, value)
+                    
+    def try_again(entries, grid):
+        for i, row in enumerate(grid):
+            #entry_row = []
+            for j, value in enumerate(row):
+                if value != '':
+                    entries[i][j].delete(0, tk.END)
+                    entries[i][j].insert(0, '')
+        
+    # Crossword grid frame
+    crossword_frame = tk.Frame(frame)
+    crossword_frame.pack(pady=10)
+
+    entries = create_window(grid[1], crossword_frame)
+
+    # Submit button frame
+    submit_frame = tk.Frame(frame)
+    submit_frame.pack(pady=10)
+
+    # Result label frame
+    result_frame = tk.Frame(frame)
+    result_frame.pack()
+
+    # Result label
+    result_label = tk.Label(result_frame, text="", font=('Helvetica', 12, 'bold'))
+    result_label.pack()
+
+    # Submit button
+    submit_button = tk.Button(submit_frame, text="Check", command=lambda: submit_entries(entries, grid, result_label))
+    submit_button.pack()
+
+    # Display answers button frame
+    answers_frame = tk.Frame(frame)
+    answers_frame.pack(pady=10)
+
+    # Display answers button
+    answers_button = tk.Button(answers_frame, text="Display Answers", command=lambda: display_answers(entries, grid))
+    answers_button.pack()
+    
+    # Display answers button
+    again_button = tk.Button(answers_frame, text="Try again", command=lambda: try_again(entries, grid))
+    again_button.pack()
+
+                    
+    
+                    
     #TODO: režģis, kurā var ievadīt atbildes un tās pārbaudīt
-    window.mainloop()
+    #window.mainloop()
+    
+    frame.mainloop()
     return
 
 

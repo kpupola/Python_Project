@@ -1,34 +1,40 @@
 {
     "Izm\u0113\u0123in\u0101juma m\u012bkla": [
         {
-            "number": 1,
-            "answer": "za\u013c\u0101",
-            "question": "Ind\u012bg\u0101k\u0101 mu\u0161mire Latvij\u0101"
-        },
+            "number": 1, 
+            "orientation": 0, 
+            "answer": "tjūrings", 
+            "question": "earsetd"
+        }, 
         {
-            "number": 2,
-            "answer": "python",
-            "question": "K\u0101d\u0101 programm\u0113\u0161anas valod\u0101 \u0161\u012b sp\u0113l\u0113 ir veidota?"
-        },
+            "number": 2, 
+            "orientation": 1, 
+            "answer": "python", 
+            "question": "awsert"
+        }, 
         {
-            "number": 3,
-            "answer": "tj\u016brings",
-            "question": "Slavens datorzin\u0101tnieks Alans ...."
-        },
+            "number": 3, 
+            "orientation": 0, 
+            "answer": "lapsa", 
+            "question": "ert"
+        }, 
         {
-            "number": 4,
-            "answer": "kokakola",
-            "question": "Popul\u0101ra g\u0101z\u0113ta limon\u0101de"
-        },
+            "number": 4, 
+            "orientation": 1, 
+            "answer": "ģitāra", 
+            "question": "34trdy"
+        }, 
         {
-            "number": 5,
-            "answer": "lapsa",
-            "question": "Dz\u012bvnieks, kas piemin\u0113ts k\u0101d\u0101 interneta p\u0101rl\u016bkprogramm\u0101 un Pr\u0101ta V\u0113tras dziesm\u0101"
-        },
+            "number": 5, 
+            "orientation": 0, 
+            "answer": "kokakola", 
+            "question": "aesrt"
+        }, 
         {
-            "number": 6,
-            "answer": "\u0123it\u0101ra",
-            "question": "M\u016bzikas instruments ar 6 st\u012bg\u0101m"
+            "number": 6, 
+            "orientation": 1, 
+            "answer": "zaļā", 
+            "question": "erst"
         }
     ],
     "pirm\u0101 m\u012bkla": [
