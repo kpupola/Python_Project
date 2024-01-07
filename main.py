@@ -45,7 +45,7 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
             return False
 
         vertikals = is_vertical(rezgis, rinda, kolonna) #norāda virzienu vārdam, ar kuru krustosies
-        varda_garums = len(vards) + 1
+        varda_garums = len(vards) 
         check = True
         #vārda sākuma indeksa noteikšana
         if not vertikals: # vārdu, kuru liksim režģī, jāliek perpendikulāri tam, ar ko krustosies
@@ -67,18 +67,28 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
                 #print("vārds iet pāri robežai pa labi")
                 check = False
                 break
-    
+
+    #pārbauda, vai vārda index nelegāli nepārklājas ar citiem vārdiem
+    if not vertikals:
+        if (varda_sakums_rinda - 1) > 0:
+            if rezgis[varda_sakums_rinda - 1][varda_sakums_kolonna] != ' ':
+                check = False
+    else:
+        if (varda_sakums_kolonna - 1) > 0:
+            if rezgis[varda_sakums_rinda][varda_sakums_kolonna - 1] !=' ':
+                check = False
+
     #pārbauda, vai vārds nepārklājas nelegāli ar citiem vārdiem
     for i in range(varda_garums):
         if not vertikals:
             if (varda_sakums_rinda + i) <= GRID_SIZE:
-                if rezgis[varda_sakums_rinda + i - 1][varda_sakums_kolonna] != ' ' and rezgis[varda_sakums_rinda + i][varda_sakums_kolonna] != vards[i]:
+                if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna] != ' ' and rezgis[varda_sakums_rinda + i][varda_sakums_kolonna] != vards[i]:
                     #print("vārds nelegāli pārklājas vertikāli")
                     check = False
                     break
         else:
             if (varda_sakums_kolonna + i) <= GRID_SIZE:
-                if rezgis[varda_sakums_rinda][varda_sakums_kolonna + i - 1] != ' ' and rezgis[varda_sakums_rinda][varda_sakums_kolonna + i] != vards[i]:
+                if rezgis[varda_sakums_rinda][varda_sakums_kolonna + i] != ' ' and rezgis[varda_sakums_rinda][varda_sakums_kolonna + i] != vards[i]:
                     #print("vārds nelegāli pārklājas horizontāli")
                     check = False
                     break
@@ -195,7 +205,7 @@ def populate_grid(saraksts):
     #Ievieto pirmo vārdu režģī
     place_word(rezgis, pirmais_vards, 0, 10, 10)
     #Nomaina pirmā vārda numuru uz 1
-    saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards][1], 0)
+    saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards], 0)
     #Pievieno pirmo ierakstu jaunas otrajam dictionarijam
     vards_jautajums2 = {pirmais_vards: saraksts[pirmais_vards]}
     rezgis[10][9] = vards_jautajums2[pirmais_vards][0] 
@@ -220,7 +230,7 @@ def populate_grid(saraksts):
                                   orientation = 1
                               place_word(rezgis, vards, burta_indekss, rinda, kolonna)
                               vards_jautajums2[vards] = saraksts[vards] #pievieno otrajai vardnicai ierakstu, kas bāzēta uz konkrēto vārdu
-                              vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards][1], orientation) #nomaina ieraksta numuru uz vārda numuru
+                              vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards], orientation) #nomaina ieraksta numuru uz vārda numuru
                               if orientation == 0:
                                   rezgis[rinda][kolonna - burta_indekss - 1] = vards_jautajums2[vards][0] 
                               else:
@@ -245,10 +255,8 @@ def populate_grid(saraksts):
          print('Vardi izvietoti veiksmigi')
          return (vardnica, rezgis)
     else:
-        vardnica = alter_dict(vards_jautajums2)
         print('Nesanāca izveidot režģi')
-        print(saraksts)
-        return (vardnica, rezgis)
+        return False
     
 def varda_parbaude(vards):
     if len(vards)<= 2 or len(vards) > GRID_SIZE:
