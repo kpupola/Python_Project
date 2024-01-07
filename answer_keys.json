@@ -1,46 +1,34 @@
 {
-    "Izmēģinājuma mīkla": [
+    "Izm\u0113\u0123in\u0101juma m\u012bkla": [
         {
             "number": 1,
-            "answer": "zaļā",
-            "question": "Indīgākā mušmire Latvijā"
+            "answer": "za\u013c\u0101",
+            "question": "Ind\u012bg\u0101k\u0101 mu\u0161mire Latvij\u0101"
         },
         {
             "number": 2,
             "answer": "python",
-            "question": "Kādā programmēšanas valodā šī spēlē ir veidota?"
+            "question": "K\u0101d\u0101 programm\u0113\u0161anas valod\u0101 \u0161\u012b sp\u0113l\u0113 ir veidota?"
         },
         {
             "number": 3,
-            "answer": "tjūrings",
-            "question": "Slavens datorzinātnieks Alans ...."
+            "answer": "tj\u016brings",
+            "question": "Slavens datorzin\u0101tnieks Alans ...."
         },
         {
             "number": 4,
             "answer": "kokakola",
-            "question": "Populāra gāzēta limonāde"
+            "question": "Popul\u0101ra g\u0101z\u0113ta limon\u0101de"
         },
         {
             "number": 5,
             "answer": "lapsa",
-            "question": "Dzīvnieks, kas pieminēts kādā interneta pārlūkprogrammā un Prāta Vētras dziesmā"
+            "question": "Dz\u012bvnieks, kas piemin\u0113ts k\u0101d\u0101 interneta p\u0101rl\u016bkprogramm\u0101 un Pr\u0101ta V\u0113tras dziesm\u0101"
         },
         {
             "number": 6,
-            "answer": "ģitāra",
-            "question": "Mūzikas instruments ar 6 stīgām"
-        }
-    ],
-    "cita mikla": [
-        {
-            "number": 1,
-            "answer": "dators",
-            "question": "Kur dz\u012bvo v\u012brusi"
-        },
-        {
-            "number": 2,
-            "answer": "bulcina",
-            "question": "Labakas brokastis"
+            "answer": "\u0123it\u0101ra",
+            "question": "M\u016bzikas instruments ar 6 st\u012bg\u0101m"
         }
     ],
     "pirm\u0101 m\u012bkla": [
