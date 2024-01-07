@@ -1,14 +1,34 @@
 {
-    "vel kkas": [
+    "Izmēģinājuma mīkla": [
         {
             "number": 1,
-            "answer": "dators",
-            "question": "Kur dz\u012bvo v\u012brusi"
+            "answer": "zaļā",
+            "question": "Indīgākā mušmire Latvijā"
         },
         {
             "number": 2,
-            "answer": "bulcina",
-            "question": "Labakas brokastis"
+            "answer": "python",
+            "question": "Kādā programmēšanas valodā šī spēlē ir veidota?"
+        },
+        {
+            "number": 3,
+            "answer": "tjūrings",
+            "question": "Slavens datorzinātnieks Alans ...."
+        },
+        {
+            "number": 4,
+            "answer": "kokakola",
+            "question": "Populāra gāzēta limonāde"
+        },
+        {
+            "number": 5,
+            "answer": "lapsa",
+            "question": "Dzīvnieks, kas pieminēts kādā interneta pārlūkprogrammā un Prāta Vētras dziesmā"
+        },
+        {
+            "number": 6,
+            "answer": "ģitāra",
+            "question": "Mūzikas instruments ar 6 stīgām"
         }
     ],
     "cita mikla": [
