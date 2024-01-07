@@ -11,12 +11,16 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
     f = tk.Frame(window)
     f.pack()
     
-   
-   
-    
     saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
-    return_values = populate_grid(saraksts) 
-
+    return_values = populate_grid(saraksts)
+    grid_box = tk.Text(f)
+    if return_values:
+        grid = return_values[1]
+        grid_box.insert("1.0", return_grid_string(grid))
+        print(return_grid_string(grid))
+        grid_box.grid(row=0, column=0)
+    else:
+        grid_box.inser("1.0", "Nesanāca :(")
      
      
     #TODO: parāda izveidotu režģi un ir poga, ar kuru var uzģenerēt citus variantus
@@ -44,7 +48,7 @@ def create_puzzle_view():
 
     # TODO: funkcija, kas ievadi pārvērš sarakstā ar vārdnīcām
 
-    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade, window))
+    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade.get("1.0", tk.END), window))
     izveidot_poga.grid(row=3, column=0)
 
     

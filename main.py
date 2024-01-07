@@ -24,6 +24,16 @@ def print_grid(rezgis):
             print(kolonna, end=" ")
         print()
 
+def return_grid_string(rezgis):
+    # Atgriež formatētu režģi kā stringu
+    grid_str = ''
+    for i in range(GRID_SIZE):
+        rinda_str = ''
+        for j in range(GRID_SIZE):
+            rinda_str = rinda_str + ' ' + rezgis[i][j]
+        grid_str += rinda_str + '\n'
+    return grid_str
+
 # Funkcijas check_word_placement() parametri ir:
     # rezgis – divdimensionāls masīvs, kurš satur vārdus un ' ' tur, kur nav vārdu
     # vards – vārds, ko vēlas ielikt režģī
@@ -277,6 +287,7 @@ def main():
              if return_values:
                 print(return_values[0])
                 print_grid(return_values[1])
+                
      #print_grid(empty_grid)
     
 if __name__ == "__main__":
