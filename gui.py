@@ -48,7 +48,13 @@ def parse_input(text):
         if space_index != -1:
             word = line[:space_index]
             question = line[space_index+1:]
-            dictionary[word] = (0, 0, question)
+            if dictionary and word in dictionary:
+                print("Vārds {} jau ir bijis ievietots mīklā. Lūdzu ievadiet citu vārdu!".format(word))
+            else:
+                if varda_parbaude(word) == False:
+                    print("Vārds {} nav atbilstošā izmērā. Lūdzu ievadiet citu vārdu!".format(word))
+                else:
+                    dictionary[word] = (0, 0, question)
     return dictionary
 
 def choose_puzzle_view():

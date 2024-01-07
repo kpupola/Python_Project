@@ -237,6 +237,12 @@ def populate_grid(saraksts):
     #      print(saraksts)
     #      print (vards_jautajums2)
     #      return False 
+
+def varda_parbaude(vards):
+    if len(vards)< 2 or len(vards) > GRID_SIZE:
+        return False
+    else:
+        return True
     
 
 def get_user_input():
@@ -248,7 +254,14 @@ def get_user_input():
             break
         question = input ("Ievadiet vārdam atbilstošo jautājumu: ").strip().lower()
         #word_list.append(word)
-        vards_jautajums[word] = (0, question) 
+        # Check if the key already exists in the dictionary
+        if vards_jautajums and word in vards_jautajums:
+                print("Vārds {} jau ir bijis ievietots mīklā. Lūdzu ievadiet citu vārdu!".format(word))
+        else:
+            if varda_parbaude(word) == False:
+                print("Vārds {} nav atbilstošā izmērā. Lūdzu ievadiet citu vārdu!".format(word))
+            else:
+                vards_jautajums[word] = (0, question) 
     return vards_jautajums
 
 def main():
@@ -258,9 +271,9 @@ def main():
     else:
         for i in range(len(lietotaja_saraksts) + int(len(lietotaja_saraksts)/2)):
              saraksts = shuffle_keys(lietotaja_saraksts.copy()) 
-             #print(saraksts)
-             print(populate_grid(saraksts))
-     #print_grid(empty_grid)
+             return_values = populate_grid(saraksts)
+             print(return_values[0])
+             print_grid(return_values[1])
     
 if __name__ == "__main__":
     main()
