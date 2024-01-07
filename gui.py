@@ -84,8 +84,12 @@ def solve_puzzle_view(frame, puzzle_key):
     jautajumi=return_questions(puzzle_key)
     vardnica=combine_dict(atbildes, jautajumi)
     grid=populate_grid(vardnica)
-  
+    
     print(vardnica)
+    
+    if not grid:
+        return
+
     frame = tk.Toplevel(root)
     f = tk.Frame(frame)
     f.pack()
