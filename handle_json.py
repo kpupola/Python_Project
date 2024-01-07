@@ -53,6 +53,22 @@ def return_answers(puzzle_key):
                 answers.append(entry["answer"])
     return answers
 
+def return_questions(puzzle_key):
+    # atgriež sarakstu ar konkrētās puzles jautājumiem
+    questions = []
+    with open(file_name, "r", encoding="utf8") as f:
+        if os.stat(file_name).st_size != 0:
+            data = json.load(f)
+            for entry in data[puzzle_key]:
+                questions.append(entry["question"])
+    return questions
+
+def combine_dict(answers, questions):
+    dict = {}
+    for i in range(len(answers)):
+        dict[answers[i]] = questions[i]
+    return dict
+
 def return_puzzle(puzzle_key):
     # atgriež sarakstu ar visām puzles atbildēm un jautājumiem
     puzzle = []
@@ -62,21 +78,22 @@ def return_puzzle(puzzle_key):
             puzzle = data[puzzle_key]
     return puzzle
 
-def clear_file(): #nestrādā
-    # TODO: izdzēš visus faila datus, izņemot pirmo ierakstu
-    with open(file_name, "r+", encoding="utf8") as f:
-        if os.stat(file_name).st_size != 0:
-            data = json.load(f)
-            pirmais_ieraksts = {"Izmēģinājuma mīkla" : data["Izmēģinājuma mīkla"]}
-            print(pirmais_ieraksts)
-            f.seek(0)
-            json.dump(pirmais_ieraksts, f, indent=4)
-    return
+# def clear_file(): #nestrādā
+#     # TODO: izdzēš visus faila datus, izņemot pirmo ierakstu
+#     with open(file_name, "r+", encoding="utf8") as f:
+#         if os.stat(file_name).st_size != 0:
+#             data = json.load(f)
+#             pirmais_ieraksts = {"Izmēģinājuma mīkla" : data["Izmēģinājuma mīkla"]}
+#             print(pirmais_ieraksts)
+#             f.seek(0)
+#             json.dump(pirmais_ieraksts, f, indent=4)
+#     return
 
 
-write_to_file(sample_dict, "pirmā mīkla")
-write_to_file(sample_dict, "otrā mīkla")
-print(return_keys())
-print(return_answers("Izmēģinājuma mīkla"))
-print(return_puzzle("Izmēģinājuma mīkla"))
-#clear_file()
+# write_to_file(sample_dict, "pirmā mīkla")
+# write_to_file(sample_dict, "otrā mīkla")
+# print(return_keys())
+# print(return_answers("Izmēģinājuma mīkla"))
+# print(return_puzzle("Izmēģinājuma mīkla"))
+# #clear_file()
+# print(combine_dict(return_answers("Izmēģinājuma mīkla"), return_questions("Izmēģinājuma mīkla")))
