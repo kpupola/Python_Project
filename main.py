@@ -169,6 +169,19 @@ def is_vertical(rezgis, row, col):
                 return True
     return False
 
+#pārveido vārdnīcu vajadzīgajā formā
+def alter_dict(vardnica2):
+    izmainita_vardnica = []
+
+    for word, (number, question) in vardnica2.items():
+        izmainita_vardnica.append({
+            "number": number,
+            "word": word,
+            "question": question
+        })
+
+    return izmainita_vardnica
+
 def populate_grid(saraksts):
 
     vards_jautajums2 = {}
@@ -197,7 +210,6 @@ def populate_grid(saraksts):
               for rinda in range(GRID_SIZE):
                   for kolonna in range(GRID_SIZE):
                       if rezgis[rinda][kolonna] == burts:
-                          print(f"Processing word: {vards}")  # Add this line
                           if check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
                               place_word(rezgis, vards, burta_indekss, rinda, kolonna)
                               vards_jautajums2[vards] = saraksts[vards] #pievieno otrajai vardnicai ierakstu, kas bāzēta uz konkrēto vārdu
@@ -205,7 +217,6 @@ def populate_grid(saraksts):
                               varda_nr += 1
                               del saraksts[vards] #izdzēšs no pirmās vārdnīcas ierakstu, kas satur vārdu
                               vardu_saraksts.pop(vards_index) #izdzēš vārdu no vardu_saraksts
-                              print(f"Deleted word: {vards}") 
                               vards_index = vards_index - 1
                               vards_ielikts = True
                               break
@@ -218,16 +229,14 @@ def populate_grid(saraksts):
           vards_index += 1
 
     if not saraksts:
+         vardnica = alter_dict(vards_jautajums2)
          print('Vardi izvietoti veiksmigi')
-         print(saraksts)
-         print (vards_jautajums2)
-         print_grid(rezgis)
-         return True
-    else:
-         print('Nesanāca izveidot režģi')
-         print(saraksts)
-         print (vards_jautajums2)
-         return False 
+         return (vardnica, rezgis)
+    # else:
+    #      print('Nesanāca izveidot režģi')
+    #      print(saraksts)
+    #      print (vards_jautajums2)
+    #      return False 
     
 
 def get_user_input():
@@ -250,7 +259,7 @@ def main():
         for i in range(len(lietotaja_saraksts) + int(len(lietotaja_saraksts)/2)):
              saraksts = shuffle_keys(lietotaja_saraksts.copy()) 
              #print(saraksts)
-             populate_grid(saraksts) 
+             print(populate_grid(saraksts))
      #print_grid(empty_grid)
     
 if __name__ == "__main__":
