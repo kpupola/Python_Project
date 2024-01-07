@@ -1,4 +1,5 @@
 import random
+
 GRID_SIZE = 60
 
 # Funkcija, kas randomizē sarakstu
@@ -214,7 +215,6 @@ def main():
         for i in range(len(saraksts) + int(len(saraksts)/2)):
             lietotaja_saraksts = shuffle_words(saraksts.copy())
             populate_grid(lietotaja_saraksts)
-    #print_grid(empty_grid)
     
 if __name__ == "__main__":
     main()
