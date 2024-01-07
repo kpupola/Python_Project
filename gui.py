@@ -80,8 +80,11 @@ def solve_puzzle_view(frame, puzzle_key):
     jautajumi=return_questions(puzzle_key)
     vardnica=combine_dict(atbildes, jautajumi)
     grid=populate_grid(vardnica)
-    
     print(vardnica)
+    
+    if not grid:
+        return
+
     frame = tk.Toplevel(root)
     f = tk.Frame(frame)
     f.pack()
@@ -104,7 +107,7 @@ def solve_puzzle_view(frame, puzzle_key):
         for i, row in enumerate(grid):
             entry_row = []
             for j, value in enumerate(row):
-                if value != '':
+                if value != ' ':
                     entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center")
                     entry.insert(0, '')  # Insert the letter into the entry
                     entry.grid(row=i, column=j, padx=1, pady=1)
@@ -166,7 +169,7 @@ def solve_puzzle_view(frame, puzzle_key):
     crossword_frame = tk.Frame(frame)
     crossword_frame.pack(pady=10)
 
-    entries = create_window(grid, crossword_frame)
+    entries = create_window(grid[1], crossword_frame)
 
     # Submit button frame
     submit_frame = tk.Frame(frame)
