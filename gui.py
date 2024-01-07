@@ -2,7 +2,7 @@ import tkinter as tk
 from main import *
 from handle_json import *
 
-def generate_puzzle_view(parent_window):
+def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
     parent_window.destroy() # aizver iepriekšējo logu
 
     window = tk.Toplevel(root)
@@ -11,13 +11,21 @@ def generate_puzzle_view(parent_window):
     f = tk.Frame(window)
     f.pack()
     
+   
+   
     
+    saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
+    return_values = populate_grid(saraksts) 
+
+     
      
     #TODO: parāda izveidotu režģi un ir poga, ar kuru var uzģenerēt citus variantus
     window.mainloop()
     return
 
-
+def get_input(ievade, parent_window):
+    atbildes_un_jautajumi = parse_input(ievade)
+    generate_puzzle_view(parent_window, atbildes_un_jautajumi)
     
 def create_puzzle_view():
     window = tk.Toplevel(root)
@@ -36,16 +44,13 @@ def create_puzzle_view():
 
     # TODO: funkcija, kas ievadi pārvērš sarakstā ar vārdnīcām
 
-    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: generate_puzzle_view(window))
+    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade, window))
     izveidot_poga.grid(row=3, column=0)
 
-    teksts = ievade.get("1.0", tk.END)
-    vardnica = parse_input(teksts)
     
     window.mainloop()
     return
 
-#funkcija, kas sadala lietotaja texta inputu vardnicā ar vārdiem kā keys un to values kā - numurs (sākumā nulle), jautājums
 def parse_input(text):
     lines = text.split('\n')
     dictionary = {}
@@ -56,6 +61,8 @@ def parse_input(text):
             question = line[space_index+1:]
             dictionary[word] = (0, question)
     return dictionary
+#funkcija, kas sadala lietotaja texta inputu vardnicā ar vārdiem kā keys un to values kā - numurs (sākumā nulle), jautājums
+
 
 def choose_puzzle_view():
     window = tk.Toplevel(root)
@@ -77,8 +84,7 @@ def solve_puzzle_view(frame, puzzle_key):
     #    parent_window.destroy()
      #   window = tk.Toplevel(root)
       #  window.minsize(500, 500)
-#
-     #   
+#  #   
 
     atbildes=return_answers(puzzle_key)
     jautajumi=return_questions(puzzle_key)
