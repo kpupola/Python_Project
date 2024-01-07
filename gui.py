@@ -2,8 +2,12 @@ import tkinter as tk
 from main import *
 from handle_json import *
 
+def close_top(top):
+    top.destroy()
+    top.update()
+
 def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
-    parent_window.destroy() # aizver iepriekšējo logu
+    #parent_window.destroy() # aizver iepriekšējo logu
 
     window = tk.Toplevel(root)
     window.minsize(500, 500)
@@ -15,33 +19,50 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
     #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
     saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
     return_values = populate_grid(saraksts)
+    #cikls, kas nodrošina, ka tik attēloti tikai režģi, kas ir izdevušies
+    fail_count = 0
+    while not return_values:
+            saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
+            return_values = populate_grid(saraksts)
+            fail_count += 1
+            if fail_count == 30:
+                grid_box.insert("1.0", "Ar šo vārdu sarakstu nav izdevies izveidot režģi, mēģini ievadīt citus vārdus.")
+                break
     
     if return_values:
         grid = return_values[1]
         grid_box.insert("1.0", return_grid_string(grid))
-        print(return_grid_string(grid))
-        #grid_box.config(state="disabled")
-        grid_box.grid(row=0, column=0)
-    else:
-        grid_box.insert("1.0", "Nesanāca :(")
-    
+        grid_box.config(state="disabled")
+
+    grid_box.grid(row=0, column=0)
     def print_rezgis():
+
+        grid_box.config(state="normal")
         grid_box.delete("1.0", tk.END)
-        #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
+        
+        #izprintē variantu režģim no lietotāja ievadītajiem vārdiem
         saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
         return_values = populate_grid(saraksts)
+
+        while not return_values:
+            saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
+            return_values = populate_grid(saraksts)
         
         if return_values:
             grid = return_values[1]
             grid_box.insert("1.0", return_grid_string(grid))
-            print(return_grid_string(grid))
-            #grid_box.config(state="disabled")
+            grid_box.config(state="disabled")
             grid_box.grid(row=0, column=0)
         else:
             grid_box.insert("1.0", "Nesanāca :(")
-     
-    shuffle_poga = tk.Button(f, text="Izveidot citu izkārtojumu", command=print_rezgis)
-    shuffle_poga.grid(row=1, column=0)
+            grid_box.config(state="disabled")
+
+    if return_values: 
+        shuffle_poga = tk.Button(f, text="Izveidot citu izkārtojumu", command=print_rezgis)
+        shuffle_poga.grid(row=1, column=0)
+    else:
+        atpakal_poga = tk.Button(f, text="Atgriezties uz vārdu ievadi", command=lambda: close_top(window))
+        atpakal_poga.grid(row=1, column=0)
 
     window.mainloop()
     return
