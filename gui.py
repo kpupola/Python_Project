@@ -10,11 +10,15 @@ def generate_puzzle_view(parent_window):
 
     f = tk.Frame(window)
     f.pack()
-
+    
+    
+     
     #TODO: parāda izveidotu režģi un ir poga, ar kuru var uzģenerēt citus variantus
     window.mainloop()
     return
 
+
+    
 def create_puzzle_view():
     window = tk.Toplevel(root)
     window.minsize(500, 500)
@@ -80,16 +84,14 @@ def solve_puzzle_view(frame, puzzle_key):
     jautajumi=return_questions(puzzle_key)
     vardnica=combine_dict(atbildes, jautajumi)
     grid=populate_grid(vardnica)
-    
+  
     print(vardnica)
     frame = tk.Toplevel(root)
     f = tk.Frame(frame)
     f.pack()
     
     
-    
-
-    
+       
     
     
 #return display_filled_windows(grid)
@@ -97,14 +99,14 @@ def solve_puzzle_view(frame, puzzle_key):
 #       title_label.grid(row=0, column=0)
     
     #def create_window(grid, parent_window):
-    
+
     def create_window(grid, parent_frame):
         entries = []
 
         for i, row in enumerate(grid):
             entry_row = []
             for j, value in enumerate(row):
-                if value != '':
+                if value != ' ':
                     entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center")
                     entry.insert(0, '')  # Insert the letter into the entry
                     entry.grid(row=i, column=j, padx=1, pady=1)
@@ -119,14 +121,14 @@ def solve_puzzle_view(frame, puzzle_key):
         # Reset background color
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
-                if value != '':
+                if value != ' ':
                     entries[i][j].config(bg="white")
 
         entered_values = []
         for i, row in enumerate(grid):
             entered_row = []
             for j, value in enumerate(row):
-                if value != '':
+                if value != ' ':
                     entered_value = entries[i][j].get()
                     entered_row.append(entered_value)
                 else:
@@ -135,11 +137,11 @@ def solve_puzzle_view(frame, puzzle_key):
 
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
-                if value != '' and entered_values[i][j] != value:
+                if value != ' ' and entered_values[i][j] != value:
                     entries[i][j].config(bg="red")
 
         # Check for win
-        if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ''):
+        if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' '):
             result_label.config(text="Congratulations! You win!", fg="red")
         else:
             result_label.config(text="Incorrect input! Try again.", fg="red")
@@ -150,7 +152,7 @@ def solve_puzzle_view(frame, puzzle_key):
         for i, row in enumerate(grid):
             #entry_row = []
             for j, value in enumerate(row):
-                if value != '':
+                if value != ' ':
                     entries[i][j].delete(0, tk.END)
                     entries[i][j].insert(0, value)
                     
@@ -158,7 +160,7 @@ def solve_puzzle_view(frame, puzzle_key):
         for i, row in enumerate(grid):
             #entry_row = []
             for j, value in enumerate(row):
-                if value != '':
+                if value != ' ':
                     entries[i][j].delete(0, tk.END)
                     entries[i][j].insert(0, '')
         
@@ -166,7 +168,7 @@ def solve_puzzle_view(frame, puzzle_key):
     crossword_frame = tk.Frame(frame)
     crossword_frame.pack(pady=10)
 
-    entries = create_window(grid, crossword_frame)
+    entries = create_window(grid[1], crossword_frame)
 
     # Submit button frame
     submit_frame = tk.Frame(frame)
@@ -181,7 +183,7 @@ def solve_puzzle_view(frame, puzzle_key):
     result_label.pack()
 
     # Submit button
-    submit_button = tk.Button(submit_frame, text="Check", command=lambda: submit_entries(entries, grid, result_label))
+    submit_button = tk.Button(submit_frame, text="Check", command=lambda: submit_entries(entries, grid[1], result_label))
     submit_button.pack()
 
     # Display answers button frame
@@ -189,11 +191,11 @@ def solve_puzzle_view(frame, puzzle_key):
     answers_frame.pack(pady=10)
 
     # Display answers button
-    answers_button = tk.Button(answers_frame, text="Display Answers", command=lambda: display_answers(entries, grid))
+    answers_button = tk.Button(answers_frame, text="Display Answers", command=lambda: display_answers(entries, grid[1]))
     answers_button.pack()
     
     # Display answers button
-    again_button = tk.Button(answers_frame, text="Try again", command=lambda: try_again(entries, grid))
+    again_button = tk.Button(answers_frame, text="Try again", command=lambda: try_again(entries, grid[1]))
     again_button.pack()
 
                     

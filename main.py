@@ -177,7 +177,7 @@ def alter_dict(vardnica2):
         izmainita_vardnica.append({
             "number": number,
             "orientation": orientation,
-            "word": word,
+            "answer": word,
             "question": question
         })
 
@@ -233,7 +233,7 @@ def populate_grid(saraksts):
                   break
           vards_index += 1
 
-    if not saraksts:
+    if not saraksts: #ja izdodas izveidot režģi
          vardnica = alter_dict(vards_jautajums2)
          print('Vardi izvietoti veiksmigi')
          return (vardnica, rezgis)
@@ -241,6 +241,12 @@ def populate_grid(saraksts):
         print('Nesanāca izveidot režģi')
         return False 
     
+
+def varda_parbaude(vards):
+    if len(vards)<= 2 or len(vards) > GRID_SIZE:
+        return False
+    else:
+        return True
 
 def get_user_input():
 
@@ -268,8 +274,9 @@ def main():
         for i in range(len(lietotaja_saraksts) + int(len(lietotaja_saraksts)/2)):
              saraksts = shuffle_keys(lietotaja_saraksts.copy()) 
              return_values = populate_grid(saraksts)
-             print(return_values[0])
-             print_grid(return_values[1])
+             if return_values:
+                print(return_values[0])
+                print_grid(return_values[1])
      #print_grid(empty_grid)
     
 if __name__ == "__main__":
