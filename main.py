@@ -197,7 +197,7 @@ def populate_grid(saraksts):
     saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards][1])
     #Pievieno pirmo ierakstu jaunas otrajam dictionarijam
     vards_jautajums2 = {pirmais_vards: saraksts[pirmais_vards]}
-    # Izdzēšs pirmo saraksta vārdnīcas ierakstu
+    # Izdzēš pirmo saraksta vārdnīcas ierakstu
     saraksts.pop(next(iter(saraksts.keys()), None), None)
     
     vards_index = 0
