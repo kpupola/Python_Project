@@ -125,18 +125,17 @@ def choose_puzzle_view():
     window.mainloop()
 
 def solve_puzzle_view(frame, puzzle_key):
-    #    parent_window.destroy()
-     #   window = tk.Toplevel(root)
-      #  window.minsize(500, 500)
-#  #   
-
+ 
+#izsauc funkcijas, kas atgriež atbildes, jautājumus un funkcija, kas saliek kopā tos vārdnīcas formātā
     atbildes=return_answers(puzzle_key)
     jautajumi=return_questions(puzzle_key)
     vardnica=combine_dict(atbildes, jautajumi)
-    grid=populate_grid(vardnica)
+    grid=populate_grid(vardnica) 
     
+    vardnica1 = grid[0]
+    
+    print(vardnica1)
     print(vardnica)
-    
     if not grid:
         return
 
@@ -144,40 +143,31 @@ def solve_puzzle_view(frame, puzzle_key):
     f = tk.Frame(frame)
     f.pack()
     
-    
-       
-    
-    
-#return display_filled_windows(grid)
-#    title_label = tk.Label(f, text="Atrisināt mīklu " + puzzle_key)
-#       title_label.grid(row=0, column=0)
-    
-    #def create_window(grid, parent_window):
-
+ #izveido krustvārdu mīklas režģi
     def create_window(grid, parent_frame):
         entries = []
 
         for i, row in enumerate(grid):
             entry_row = []
             for j, value in enumerate(row):
-                if value != ' ':
+                if value != ' ': #izveido ievades lauciņus, tur kur nav tukšums
                     entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center")
-                    entry.insert(0, '')  # Insert the letter into the entry
+                    entry.insert(0, '')  
                     entry.grid(row=i, column=j, padx=1, pady=1)
                     entry_row.append(entry)
                 else:
                     entry_row.append('')
             entries.append(entry_row)
 
-        return entries
+        return entries # Atgriež ievades lauciņu sarakstu
 
     def submit_entries(entries, grid, result_label):
-        # Reset background color
+        # Atiestata ievadē esošo fona krāsu
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
                 if value != ' ':
                     entries[i][j].config(bg="white")
-
+        # saglabā ievades vērtības
         entered_values = []
         for i, row in enumerate(grid):
             entered_row = []
@@ -188,76 +178,108 @@ def solve_puzzle_view(frame, puzzle_key):
                 else:
                     entered_row.append('')
             entered_values.append(entered_row)
-
+        #ja ir nepareizi, iekrāso sarkanu
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
                 if value != ' ' and entered_values[i][j] != value:
                     entries[i][j].config(bg="red")
 
-        # Check for win
+        # pārbauda vai ir pareizi un uzvarēšanas paziņojums
         if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' '):
             result_label.config(text="Congratulations! You win!", fg="red")
         else:
             result_label.config(text="Incorrect input! Try again.", fg="red")
 
     
-
+#parāda atbildes
     def display_answers(entries, grid):
         for i, row in enumerate(grid):
-            #entry_row = []
             for j, value in enumerate(row):
                 if value != ' ':
                     entries[i][j].delete(0, tk.END)
                     entries[i][j].insert(0, value)
-                    
+#notīra krustvārdu mīklas ievades vērtības, lai sāktu no jauna                 
     def try_again(entries, grid):
         for i, row in enumerate(grid):
-            #entry_row = []
             for j, value in enumerate(row):
                 if value != ' ':
                     entries[i][j].delete(0, tk.END)
                     entries[i][j].insert(0, '')
-        
-    # Crossword grid frame
+
+
+   
+    # Krustvārdu mīklas režģa logs
     crossword_frame = tk.Frame(frame)
     crossword_frame.pack(pady=10)
+    
 
     entries = create_window(grid[1], crossword_frame)
-
-    # Submit button frame
+        
+    # Iesniegt pogas logs
     submit_frame = tk.Frame(frame)
     submit_frame.pack(pady=10)
 
-    # Result label frame
+    # Rezultāta etiķetes logs
     result_frame = tk.Frame(frame)
     result_frame.pack()
 
-    # Result label
+    # Rezultāta etiķete
     result_label = tk.Label(result_frame, text="", font=('Helvetica', 12, 'bold'))
     result_label.pack()
 
-    # Submit button
+    # Iesniegt poga
     submit_button = tk.Button(submit_frame, text="Check", command=lambda: submit_entries(entries, grid[1], result_label))
     submit_button.pack()
 
-    # Display answers button frame
+    # Parādīt atbildes poga logs
     answers_frame = tk.Frame(frame)
     answers_frame.pack(pady=10)
 
-    # Display answers button
+    # Parādīt atbildes poga
     answers_button = tk.Button(answers_frame, text="Display Answers", command=lambda: display_answers(entries, grid[1]))
     answers_button.pack()
     
-    # Display answers button
+    # Mēģināt vēlreiz poga
     again_button = tk.Button(answers_frame, text="Try again", command=lambda: try_again(entries, grid[1]))
-    again_button.pack()
+    again_button.pack()     
+    
+    new_frame = tk.Frame(frame)
+    new_frame.pack(pady=10)
 
-                    
+    # Jautājumu parādīšanas virsraksts
+    new_label = tk.Label(new_frame, text="Jautājumi")
+    new_label.pack()  
     
-                    
-    #TODO: režģis, kurā var ievadīt atbildes un tās pārbaudīt
-    #window.mainloop()
+    # divi rāmji priekš jautājumu grupām
+    bottom_labels_frame = tk.Frame(frame)
+    bottom_labels_frame.pack(side=tk.TOP, padx=10, pady=10)
+
     
+    top_labels_frame = tk.Frame(frame)
+    top_labels_frame.pack(side=tk.TOP, padx=10, pady=10)
+    
+    #virsraksti
+    nos_text1_label = tk.Label(bottom_labels_frame, text="Horizontāli", font=('Helvetica', 11, 'bold'))
+    nos_text1_label.pack()
+
+    nos_text2_label = tk.Label(top_labels_frame, text="Vertikāli", font=('Helvetica', 11, 'bold'))
+    nos_text2_label.pack()
+    #iedalījums horizontālajos un vertikālajos
+    for item in vardnica1:
+        
+        label_text = f"{item['number']}{'.'} {item['question']}"
+        if item['orientation'] == 0:
+            
+            left_label = tk.Label(bottom_labels_frame, text=label_text, font=('Helvetica', 10))
+            left_label.pack()
+        if item['orientation'] == 1:
+            
+            right_label = tk.Label(top_labels_frame, text=label_text, font=('Helvetica', 10))
+            right_label.pack()
+
+            
+      
+
     frame.mainloop()
     return
 
