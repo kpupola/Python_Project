@@ -13,6 +13,9 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
     window = tk.Toplevel(root)
     window.minsize(500, 500)
 
+    f = tk.Frame(window, bg="#f3f4f6")  
+    f.pack(padx=20, pady=20)  
+
     f = tk.Frame(window)
     f.pack()
     grid_box = tk.Text(f, width=60, height=30)
@@ -126,8 +129,11 @@ def parse_input(text):
         elif line.strip():  #pārbauda, vai starp vārdu un jautājumu ir atstarpe
             messagebox.showerror("Kļūda", "Ievades kļūda: nav atstarpju starp vārdu un jautājumu.")
             return False, ""
-
-    return True, dictionary
+    if not dictionary:
+        messagebox.showerror("Kļūda", "Ievades kļūda: Nav ievadīts neviens vārds un jautājums.")
+        return False, ""
+    else:
+        return True, dictionary
 
 def choose_puzzle_view():
     window = tk.Toplevel(root)
