@@ -1,0 +1,2 @@
+Ārējā bibliotēka:
+Tkinter version: 8.6
