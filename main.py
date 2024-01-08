@@ -1,312 +1,428 @@
+import tkinter as tk 
+from grid_logic import *
 from handle_json import *
+from tkinter import messagebox
+from tkinter import simpledialog
 
-import random
+def close_top(top):
+    # aizver Toplevel veida logu
+    top.destroy()
+    top.update()
 
-GRID_SIZE = 60
+def get_title_and_save(parent_window, entries_array, miklas_nosaukums=''):
 
-# Funkcija, kas randomizē dic pēc vārda un attiecigi piekarto jaut tam blakus (pareizo)
-def shuffle_keys(saraksts):
-
-    keys = list(saraksts.keys()) #panem no vardnicas atslegas
-    random.shuffle(keys) #samaisa taas
-    
-    # Create a new dictionary with shuffled keys
-    shuffled_dict = {} #jauna vardnica shufflotajam
-    for key in keys: 
-        shuffled_dict[key] = saraksts[key]
-    
-    return shuffled_dict
-
-def print_grid(rezgis):
-    #Izprintē režģi konsolē
-    for rinda in rezgis:
-        for kolonna in rinda:
-            print(kolonna, end=" ")
-        print()
-
-def return_grid_string(rezgis):
-    # Atgriež formatētu režģi kā stringu
-    grid_str = ''
-    for i in range(GRID_SIZE):
-        rinda_str = ''
-        for j in range(GRID_SIZE):
-            rinda_str = rinda_str + ' ' + str(rezgis[i][j])
-        if not rinda_str.isspace():
-            grid_str += rinda_str + '\n'
-    return grid_str
-
-# Funkcijas check_word_placement() parametri ir:
-    # rezgis – divdimensionāls masīvs, kurš satur vārdus un ' ' tur, kur nav vārdu
-    # vards – vārds, ko vēlas ielikt režģī
-    # burta_indekss – burta indekss vārdā (vards), kurš sakrīt ar burtu režģī
-    # rinda – rindas indekss burtam režģī, kurš sakrīt ar vards[burta_indekss]
-    # kolonna – kolonnas indekss burtam režģī, kurš sakrīt ar vards[burta_indekss]
-    #
-    # Atgriež True, ja vārdu ir atļaus ievietot tajā vietā
-    # Jāpārbauda, ka 
-    # 1) vārds nepārsniedz režģa robežas
-    # 2) vārds nepārklājas ar citu vārdu neatbilstošiem burtiem
-    # 3) vārds neatrodas blakus citiem vārdiem paralēli
-    # 4) vārdam sākumā vai beigās nav cits vārds
-def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
-
-    #pārbauda, vai izvēlētais burts nav kāda krustpunktā
-    if (rinda + 1) < GRID_SIZE and (kolonna + 1) < GRID_SIZE:
-        if (rezgis[rinda + 1][kolonna] != ' ' and rezgis[rinda][kolonna + 1] != ' ') or (rezgis[rinda + 1][kolonna] != ' ' and rezgis[rinda][kolonna + 1] != ' '):
-            return False
-
-    vertikals = is_vertical(rezgis, rinda, kolonna) #norāda virzienu vārdam, ar kuru krustosies
-    varda_garums = len(vards)
     check = True
-    #vārda sākuma indeksa noteikšana
-    if not vertikals: # vārdu, kuru liksim režģī, jāliek perpendikulāri tam, ar ko krustosies
-        varda_sakums_rinda = rinda - burta_indekss
-        varda_sakums_kolonna = kolonna
+    if not miklas_nosaukums:
+    
+        miklas_no_faila = return_keys()
+
+        # pārbauda, vai lietotāja ievadītais nosaukums ir unikāls
+        check = False
+        while not check:
+            miklas_nosaukums = simpledialog.askstring("Nosaukums", "Ievadiet mīklas nosaukumu:")
+            if not miklas_nosaukums:
+                messagebox.showerror("Tukša ievade", "Lūdzu ievadiet mīklas nosaukumu!")
+            elif miklas_nosaukums in miklas_no_faila:
+                messagebox.showerror("Slikts nosaukums", "Mīkla ar tādu nosaukumu jau eksistē!")
+            else:
+                check = True
+    
+    if miklas_nosaukums and check:
+        save(miklas_nosaukums, entries_array)
+        close_top(parent_window)
+        return True
     else:
-        varda_sakums_rinda = rinda
-        varda_sakums_kolonna = kolonna - burta_indekss
+        return False
+
+def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=''):
+    close_top(parent_window) # aizver iepriekšējo logu
+
+    window = tk.Toplevel(root)
+    window.minsize(500, 500)
+
+    f = tk.Frame(window, bg="#f3f4f6")  
+    f.pack(padx=20, pady=20)  
+
+    # f = tk.Frame(window)
+    # f.pack()
+    grid_box = tk.Text(f, width=60, height=40)
+
+    #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
+    saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
+    return_values = populate_grid(saraksts)
+    #cikls, kas nodrošina, ka tik attēloti tikai režģi, kas ir izdevušies
+    fail_count = 0
+    while not return_values:
+            saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
+            return_values = populate_grid(saraksts)
+            fail_count += 1
+            if fail_count == 30:
+                grid_box.insert("1.0", "Ar šo vārdu sarakstu nav izdevies izveidot režģi, mēģini ievadīt citus vārdus.")
+                grid_box.config(width=40, height=5, wrap="word", state="disabled", bg="#e0777e")
+                break
+    
+    if return_values: # ja ir saņemts izdevies režģis
+        grid = return_values[1]
+        grid_box.insert("1.0", return_grid_string(grid)) 
+        grid_box.config(state="disabled")
+
+    grid_box.grid(row=0, column=0) # izvieto teksta lauku
+
+    def print_rezgis():
+        # funkcija, kas ievieto teksta laukā dažādus variantus režģim
+        grid_box.config(state="normal")
+        grid_box.delete("1.0", tk.END)
         
-    # pārbauda, vai vārda garums neiziet ārpus režģa
-    for i in range(varda_garums):
-        if not vertikals:
-            if varda_sakums_rinda + i >= GRID_SIZE: #iziet cauri x jeb rindu indeksiem uz leju
-                #print("vārds iet pāri robežai uz leju") #pagaidām testēšanas nolūkiem izprintē, kur rodas kļūda
-                check = False
-                break
+        #izprintē variantu režģim no lietotāja ievadītajiem vārdiem
+        saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
+        return_values = populate_grid(saraksts)
+
+        while not return_values: # nodrošina, ka tiek izprintēti tikai režģi, kas ir izdevušies
+            saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
+            return_values = populate_grid(saraksts)
+        
+        if return_values: # ja ir saņemts izdevies režģis
+            grid = return_values[1]
+            grid_box.insert("1.0", return_grid_string(grid))
+            grid_box.config(state="disabled")
+            grid_box.focus_set()
+            grid_box.grid(row=0, column=0)
         else:
-            if varda_sakums_kolonna + i >= GRID_SIZE: #iziet cauri y jeb kolonnu indeksiem pa labi
-                #print("vārds iet pāri robežai pa labi")
-                check = False
-                break
+            grid_box.insert("1.0", "Nesanāca :(")
+            grid_box.config(state="disabled")
 
-    #pārbauda, vai vārda index nelegāli nepārklājas ar citiem vārdiem
-    if not vertikals:
-        if (varda_sakums_rinda - 1) > 0:
-            if rezgis[varda_sakums_rinda - 1][varda_sakums_kolonna] != ' ':
-                check = False
+    if return_values: # ja ir saņemts izdevies režģis
+        # poga, ar kuru izsauc print_rezgis(), kas uzģenerēs citu izkārtojumu
+        shuffle_poga = tk.Button(f, text="Izveidot citu izkārtojumu", command=print_rezgis)
+        shuffle_poga.grid(row=1, column=0)
+
+        # poga, ar kuru tiks saglabāts esošais variants režģim
+        save_poga = tk.Button(f, text="Saglabāt", command=lambda: get_title_and_save(window, return_values[0], miklas_nosaukums))
+        save_poga.grid(row=1, column=1) 
     else:
-        if (varda_sakums_kolonna - 1) > 0:
-            if rezgis[varda_sakums_rinda][varda_sakums_kolonna - 1] !=' ':
-                check = False
+        # ja nav izdevies izveidot veiksmīgu režģi
+        atpakal_poga = tk.Button(f, text="Atgriezties uz vārdu ievadi", command= lambda: create_puzzle_view(window))
+        atpakal_poga.grid(row=1, column=0)
 
-    #pārbauda, vai vārds nepārklājas nelegāli ar citiem vārdiem
-    for i in range(varda_garums):
-        if not vertikals:
-            if (varda_sakums_rinda + i) <= GRID_SIZE:
-                if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna] != ' ' and rezgis[varda_sakums_rinda + i][varda_sakums_kolonna] != vards[i]:
-                    #print("vārds nelegāli pārklājas vertikāli")
-                    check = False
-                    break
-        else:
-            if (varda_sakums_kolonna + i) <= GRID_SIZE:
-                if rezgis[varda_sakums_rinda][varda_sakums_kolonna + i] != ' ' and rezgis[varda_sakums_rinda][varda_sakums_kolonna + i] != vards[i]:
-                    #print("vārds nelegāli pārklājas horizontāli")
-                    check = False
-                    break
-    
-    #pārbauda, vai vārdam sākumā vai beigās nav cita vārda        
-    if not vertikals:
-            #pārbauda vārdu no augšas
-            if varda_sakums_rinda - 1 > 0: #pārbauda, vai vārds nav režģa augšējā malā
-                if rezgis[varda_sakums_rinda - 2][varda_sakums_kolonna] !=' ':
-                    check=False
-
-            #pārbauda vārdu no apakšas
-            varda_beigu_rinda=varda_sakums_rinda + varda_garums - 1
-            if varda_beigu_rinda + 1 < GRID_SIZE: #pārbauda, vai vārds nav režģa apakšējā malā
-                if rezgis[varda_beigu_rinda + 1][varda_sakums_kolonna] !=' ':
-                    check=False
-    else:
-            #pārbauda vārdu no kreisās puses
-            if varda_sakums_kolonna - 1 > 0: #pārbauda, vai vārds nav režģa kreisajā malā
-                if rezgis[varda_sakums_rinda][varda_sakums_kolonna - 2] != ' ':
-                    check=False
-
-            #pārbauda vārdu no labās puses
-            varda_beigu_kolonna=varda_sakums_kolonna + varda_garums - 1
-            if varda_beigu_kolonna + 1 < GRID_SIZE: #pārbauda, vai vārds nav režģa labajā malā
-                if rezgis[varda_sakums_rinda][varda_beigu_kolonna + 1] != ' ':
-                    check=False
-    
-    #pārbauda, vai vārds neatrodas blakus citiem vārdiem 
-    for i in range(varda_garums):
-        if not vertikals:
-            #pārbauda vārdu no kreisās puses
-            if varda_sakums_kolonna > 0: #pārbauda, vai vārds nav režģa kreisajā malā
-                if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna - 1] != ' ' and burta_indekss != i:
-                    #print("vārdam kreisajā pusē ir cits vārds")
-                    check = False
-                    break
-            #pārbauda vārdu no labās puses
-            if varda_sakums_kolonna + 1< GRID_SIZE: #pārbauda, vai vārds nav režģa labajā malā
-                if rezgis[varda_sakums_rinda + i][varda_sakums_kolonna + 1] != ' ' and burta_indekss != i:
-                    #print("vārdam labajā pusē ir cits vārds")
-                    check = False
-                    break
-        else:
-            #pārbauda vārdu no augšas
-            if varda_sakums_rinda > 0: #pārbauda, vai vārds nav režģa augšējā malā
-                if rezgis[varda_sakums_rinda - 1][varda_sakums_kolonna + i] != ' ' and burta_indekss != i:
-                    #print("vārdam augšējā pusē ir cits vārds")
-                    check = False
-                    break
-            #pārbauda vārdu no apakšas
-            if varda_sakums_rinda + 1< GRID_SIZE: #pārbauda, vai vārds nav režģa apakšējā malā
-                if rezgis[varda_sakums_rinda + 1][varda_sakums_kolonna + i] != ' ' and burta_indekss != i:
-                    #print("vārdam apaksējā pusē ir cits vārds")
-                    check = False
-                    break
-
-    return check
-
-# Funkcijas place_word() parametri:
-    # rezgis – divdimensionāls masīvs, kurš satur vārdus un ' ' tur, kur nav vārdu
-    # vards – vārds, ko vēlas ielikt režģī
-    # burta_indekss – burta indekss vārdā (vards), kurš sakrīt ar burtu režģī
-    # rinda – rindas indekss burtam režģī, kurš sakrīt ar vards[burta_indekss]
-    # kolonna – kolonnas indekss burtam režģī, kurš sakrīt ar vards[burta_indekss]
-    #
-    #Ievieto vārdu režģī noteiktā vietā
-def place_word(rezgis, vards, burta_indekss, rinda, kolonna):
-
-    if is_vertical(rezgis, rinda, kolonna):
-        for i in range(len(vards)):
-            rezgis[rinda][kolonna - burta_indekss + i] = vards[i]
-    else:
-        for i in range(len(vards)):
-            rezgis[rinda - burta_indekss + i][kolonna] = vards[i]
+    close_poga = tk.Button(f, text="Aizvērt logu", command=lambda: close_top(window))
+    close_poga.grid(row=2, column=0)
+    window.mainloop()
     return
 
-# Funkcijas is_vertical() parametri:
-    # rezgis – divdimensionāls masīvs, kurš satur vārdus un ' ' tur, kur nav vārdu
-    # rinda – rindas indekss burtam režģī, kurš ir daļa no vārda
-    # kolonna – kolonnas indekss burtam režģī, kurš ir daļa no vārda
-    #
-    # Atgriež True, ja vārds ir vertikāls; False, ja horizontāls
-def is_vertical(rezgis, row, col):
-    if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
-        if col != 0:
-            if rezgis[row][col - 1] == " " and rezgis[row][col + 1] == " ":
-                return True
-    return False
-
-#pārveido vārdnīcu vajadzīgajā formā
-def alter_dict(vardnica2):
-    izmainita_vardnica = []
-
-    for word, (number, question, orientation) in vardnica2.items():
-        izmainita_vardnica.append({
-            "number": number,
-            "orientation": orientation,
-            "answer": word,
-            "question": question
-        })
-
-    return izmainita_vardnica
-
-def populate_grid(saraksts):
-
-    vards_jautajums2 = {}
-    varda_nr = 1
-
-    #Ievieto dotā saraksta vārdus režģī, atgriež režģi
-    rezgis = [[' ' for i in range(GRID_SIZE)] for j in range(GRID_SIZE)] #sākumā tiek izveidots tukšs režģis
-    #Nosaka pirmo vārdu no vardnicas kā key 
-    pirmais_vards = next(iter(saraksts.keys()))
-    #Ievieto pirmo vārdu režģī
-    place_word(rezgis, pirmais_vards, 0, 10, 10)
-    #Nomaina pirmā vārda numuru uz 1
-    saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards], 0)
-    #Pievieno pirmo ierakstu jaunas otrajam dictionarijam
-    vards_jautajums2 = {pirmais_vards: saraksts[pirmais_vards]}
-    rezgis[10][9] = vards_jautajums2[pirmais_vards][0] 
-    # Izdzēš pirmo saraksta vārdnīcas ierakstu
-    saraksts.pop(next(iter(saraksts.keys()), None), None)
+def get_input(ievade, parent_window, miklas_nosaukums=''):
+    # apstrādā lietotāja ievadi
+    rezultats = parse_input(ievade)
+    if rezultats[0] == True:
+        close_top(parent_window)
+        atbildes_un_jautajumi = rezultats[1]
+        generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums)
     
-    vards_index = 0
-    varda_nr = 2
-    vardu_saraksts = list(saraksts.keys()) #vārdus, kas glabati kā keys, pārveido par vārdu sarakstu
-    while vards_index < len(vardu_saraksts): # ejam cauri sarakstam 
-          vards_ielikts = False
-          #vards = None
-          vards = vardu_saraksts[vards_index]
-          for burta_indekss, burts in enumerate(vards): # ejam cauri vārdam
-              for rinda in range(GRID_SIZE):
-                  for kolonna in range(GRID_SIZE):
-                      if rezgis[rinda][kolonna] == burts:
-                          if check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
-                              if is_vertical(rezgis, rinda, kolonna):
-                                  orientation = 0
-                              else:
-                                  orientation = 1
-                              place_word(rezgis, vards, burta_indekss, rinda, kolonna)
-                              vards_jautajums2[vards] = saraksts[vards] #pievieno otrajai vardnicai ierakstu, kas bāzēta uz konkrēto vārdu
-                              vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards], orientation) #nomaina ieraksta numuru uz vārda numuru
-                              if orientation == 0:
-                                  rezgis[rinda][kolonna - burta_indekss - 1] = vards_jautajums2[vards][0] 
-                              else:
-                                  rezgis[rinda - burta_indekss - 1][kolonna] = vards_jautajums2[vards][0] 
-                              varda_nr += 1
-                              del saraksts[vards] #izdzēšs no pirmās vārdnīcas ierakstu, kas satur vārdu
-                              vardu_saraksts.pop(vards_index) #izdzēš vārdu no vardu_saraksts
-                              vards_index = vards_index - 1
-                              vards_ielikts = True
-                              break
-                      if vards_ielikts:
-                          break
-                  if vards_ielikts:
-                      break
-              if vards_ielikts:
-                  break
-          vards_index += 1
-          #print(vards_index)
+def create_puzzle_view(parent_window=None):
+    if parent_window:
+        close_top(parent_window)
+    window = tk.Toplevel(root)
+    window.minsize(500, 500)
 
-    if not saraksts:
-         vardnica = alter_dict(vards_jautajums2)
-         print('Vardi izvietoti veiksmigi')
-         return (vardnica, rezgis)
-    else:
-        print('Nesanāca izveidot režģi')
-        #print(saraksts)
-        return False
-    
-def varda_parbaude(vards):
-    if len(vards)<= 2 or len(vards) > GRID_SIZE:
-        return False
-    else:
-        return True
+    f = tk.Frame(window)
+    f.pack()
 
+    # user text input ar atbildēm un jautājumiem
+    ievadi_vardus_label = tk.Label(f, text="Ievadi atbildes un jautājumus zemāk!\nIevadi atsevišķu atbildi un jautājumu jaunā rindiņā.\nFormāts: atbilde[atstarpe]jautājums")
+    ievadi_vardus_label.grid(row=0, column=0)
+    xscrollbar = tk.Scrollbar(f, orient="horizontal")
+    xscrollbar.grid(row=2, column=0, sticky='NSEW')
+    ievade = tk.Text(f, height=12, width=45, wrap="none", xscrollcommand=xscrollbar.set)
+    ievade.grid(row=1, column=0)
+    ievade.focus_set()
 
-def get_user_input():
+    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade.get("1.0", tk.END), window))
+    izveidot_poga.grid(row=3, column=0)
 
-    vards_jautajums = {}
-    while True:
-        word = input("Ievadiet vārdu (vai 'viss', lai pabeigtu): ").strip().lower()
-        if word == 'viss':
-            break
-        question = input ("Ievadiet vārdam atbilstošo jautājumu: ").strip().lower()
-        # Check if the key already exists in the dictionary
-        if vards_jautajums and word in vards_jautajums:
-                print("Vārds {} jau ir bijis ievietots mīklā. Lūdzu ievadiet citu vārdu!".format(word))
-        else:
-            if varda_parbaude(word) == False:
-                print("Vārds {} nav atbilstošā izmērā. Lūdzu ievadiet citu vārdu!".format(word))
+    window.mainloop()
+
+#funkcija, kas sadala lietotaja texta inputu vardnicā ar vārdiem kā keys un to values kā - numurs (sākumā nulle), jautājums
+def parse_input(text):
+    lines = text.split('\n')
+    dictionary = {}
+    for line in lines:
+        space_index = line.find(' ')
+        if space_index != -1:
+            word = line[:space_index].strip()
+            question = line[space_index+1:].strip()
+            if not word or not question:
+                messagebox.showerror("Ievades kļūda", "Tukšs vārds vai jautājums.")
+                return False, ""
+            
+            if word.isalpha():
+                if dictionary and word in dictionary:
+                    messagebox.showerror("Ievades kļūda",  "Vārds '{}' jau ir bijis ievietots mīklā divreiz.".format(word))
+                    return False, ""
+                else:
+                    dictionary[word] = question
             else:
-                vards_jautajums[word] = (0, question, 0) # (nr pec kartas, jautajums, orientacija (0-horizontals, 1-vertikals))
-    return vards_jautajums
-
-def main():
-    lietotaja_saraksts = get_user_input()
-    if not lietotaja_saraksts:
-           print('Saraksts ir tukss, ievadiet kadu vardu!')
+                messagebox.showerror("Kļūda", "Ievades kļūda: vārdā ir simboli, kas nav burti.")
+                return False, ""
+        elif line.strip():  #pārbauda, vai starp vārdu un jautājumu ir atstarpe
+            messagebox.showerror("Kļūda", "Ievades kļūda: nav atstarpju starp vārdu un jautājumu.")
+            return False, ""
+    if not dictionary:
+        messagebox.showerror("Kļūda", "Ievades kļūda: Nav ievadīts neviens vārds un jautājums.")
+        return False, ""
     else:
-        for i in range(len(lietotaja_saraksts) + int(len(lietotaja_saraksts)/2)):
-             saraksts = shuffle_keys(lietotaja_saraksts.copy()) 
-             return_values = populate_grid(saraksts)
-             if return_values:
-                 print(return_values[0])
-                 print_grid(return_values[1])     
-     #print_grid(empty_grid)
+        return True, dictionary
     
+def update_puzzle_view(parent_window, puzzle_key):
+    # attēlo konkrētās mīklas saturu ar opciju to atjaunot
+    close_top(parent_window)
+
+    window = tk.Toplevel(root)
+    window.minsize(500, 500)
+
+    f = tk.Frame(window)
+    f.pack()
+
+    # user text input ar atbildēm un jautājumiem
+    ievadi_vardus_label = tk.Label(f, text="Ievadi atbildes un jautājumus zemāk!\nIevadi atsevišķu atbildi un jautājumu jaunā rindiņā.\nFormāts: atbilde[atstarpe]jautājums")
+    ievadi_vardus_label.grid(row=0, column=0)
+    xscrollbar = tk.Scrollbar(f, orient="horizontal")
+    xscrollbar.grid(row=2, column=0, sticky='NSEW')
+    ievade = tk.Text(f, height=12, width=45, wrap="none", xscrollcommand=xscrollbar.set)
+
+    # teksta lauciņā ievada esošo informāciju par mīklu
+    atbildes_un_jautajumi = combine_dict(return_answers(puzzle_key), return_questions(puzzle_key))
+    veca_mikla_str = ''
+    for key, value in atbildes_un_jautajumi.items():
+        veca_mikla_str += key + ' ' + value + '\n'
+    ievade.insert("1.0", veca_mikla_str)
+    ievade.grid(row=1, column=0)
+
+    izveidot_poga = tk.Button(f, text="Saglabāt mīklu", command=lambda: get_input(ievade.get("1.0", tk.END), window, puzzle_key))
+    izveidot_poga.grid(row=3, column=0)
+
+    window.mainloop()
+
+    
+def choose_puzzle_view():
+    window = tk.Toplevel(root)
+    window.minsize(500, 500)
+
+    f = tk.Frame(window)
+    f.pack()
+
+    def refresh_frame():
+        # atjauno skatu ar jaunāko info no faila
+        for item in f.winfo_children():
+            item.destroy()
+        display_frame()
+
+    def delete_puzzle_refresh(puzzle_key):
+        # izdzēš konkrētu mīklu un atjauno skatu
+        delete_puzzle(puzzle_key)
+        refresh_frame()
+
+    def clear_list():
+        # izdzēš visu sarakstu un atjauno skatu
+        clear_file()
+        refresh_frame()
+
+    def display_frame():
+        # saraksts ar izveidotajām puzlēm, no kura vienu var izvēlēties
+        izvelies_miklu = tk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!")
+        izvelies_miklu.grid(row=0, column=0)
+        miklu_nosakumi = return_keys()
+        for i in range(len(miklu_nosakumi)):
+            # poga, kas aizved uz mīklas risināšanas logu
+            solve_but = tk.Button(f, text=miklu_nosakumi[i], command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key))
+            solve_but.grid(row=i + 2, column=0)
+
+            if miklu_nosakumi[i] != "Izmēģinājuma mīkla":
+                # poga, kas aizved uz mīklas rediģēšanas logu
+                update_but = tk.Button(f, text="Rediģēt mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: update_puzzle_view(window, puzzle_key))
+                update_but.grid(row=i + 2, column=1)
+
+                # poga, kas izdzēš mīklu no saraksta
+                delete_but = tk.Button(f, text="Izdzēst mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: delete_puzzle_refresh(puzzle_key))
+                delete_but.grid(row=i + 2, column=2)
+
+        delete_all_but = tk.Button(f, text="Izdzēst visas mīklas no saraksta", command=clear_list)
+        if len(miklu_nosakumi) == 1:
+            delete_all_but.config(state="disabled")
+        delete_all_but.grid(row=1, column=0)
+    
+    display_frame()
+
+    window.mainloop()
+
+def solve_puzzle_view(frame, puzzle_key):
+    # izsauc funkcijas, kas atgriež atbildes, jautājumus un funkcija, kas saliek kopā tos vārdnīcas formātā
+    atbildes=return_answers(puzzle_key)
+    jautajumi=return_questions(puzzle_key)
+    vardnica=combine_dict(atbildes, jautajumi)
+    grid=populate_grid(vardnica) 
+    
+    vardnica1 = grid[0]
+    
+    print(vardnica1)
+    print(vardnica)
+    if not grid:
+        return
+
+    frame = tk.Toplevel(root)
+    f = tk.Frame(frame)
+    f.pack()
+    
+ #izveido krustvārdu mīklas režģi
+    def create_window(grid, parent_frame):
+        entries = []
+        for i, row in enumerate(grid):
+            entry_row = []
+            for j, value in enumerate(row):
+                if value != ' ': #izveido ievades lauciņus, tur kur nav tukšums
+                    if str(value).isnumeric():
+                        index = tk.Text(parent_frame, width=3, height=1, borderwidth=1, relief="solid", font=('Helvetica', 10, 'bold'), cursor="arrow")
+                        index.insert("1.1", value)
+                        index.config(state="disabled", bg="#ffff99")
+                        index.grid(row=i, column=j)
+                        entry_row.append('')
+                    else:
+                        entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center")
+                        entry.insert(0, '')  
+                        entry.grid(row=i, column=j, padx=1, pady=1)
+                        entry_row.append(entry)
+                else:
+                    entry_row.append('')
+            entries.append(entry_row)
+        return entries # Atgriež ievades lauciņu sarakstu
+
+    def submit_entries(entries, grid, result_label):
+        # Atiestata ievadē esošo fona krāsu
+        for i, row in enumerate(grid):
+            for j, value in enumerate(row):
+                if value != ' ' and entries[i][j] != '':
+                    entries[i][j].config(bg="white")
+        # saglabā ievades vērtības
+        entered_values = []
+        for i, row in enumerate(grid):
+            entered_row = []
+            for j, value in enumerate(row):
+                if value != ' ' and entries[i][j] != '':
+                    entered_value = entries[i][j].get()
+                    entered_row.append(entered_value)
+                else:
+                    entered_row.append('')
+            entered_values.append(entered_row)
+        #ja ir nepareizi, iekrāso sarkanu
+        for i, row in enumerate(grid):
+            for j, value in enumerate(row):
+                if value != ' ' and entered_values[i][j] != value and entries[i][j] != '':
+                    entries[i][j].config(bg="red")
+        # pārbauda vai ir pareizi un uzvarēšanas paziņojums
+        if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' ' and entries[i][j] != ''):
+            result_label.config(text="Congratulations! You win!", fg="red")
+        else:
+            result_label.config(text="Incorrect input! Try again.", fg="red")
+
+#parāda atbildes
+    def display_answers(entries, grid):
+        for i, row in enumerate(grid):
+            for j, value in enumerate(row):
+                if value != ' ' and entries[i][j] != '':
+                    entries[i][j].delete(0, tk.END)
+                    entries[i][j].insert(0, value)
+#notīra krustvārdu mīklas ievades vērtības, lai sāktu no jauna                 
+    def try_again(entries, grid):
+        for i, row in enumerate(grid):
+            for j, value in enumerate(row):
+                if value != ' ' and entries[i][j] != '':
+                    entries[i][j].delete(0, tk.END)
+                    entries[i][j].insert(0, '')
+   
+    # Krustvārdu mīklas režģa logs
+    crossword_frame = tk.Frame(frame)
+    crossword_frame.pack(pady=10)
+
+    entries = create_window(grid[1], crossword_frame)
+        
+    # Iesniegt pogas logs
+    submit_frame = tk.Frame(frame)
+    submit_frame.pack(pady=10)
+
+    # Rezultāta etiķetes logs
+    result_frame = tk.Frame(frame)
+    result_frame.pack()
+
+    # Rezultāta etiķete
+    result_label = tk.Label(result_frame, text="", font=('Helvetica', 12, 'bold'))
+    result_label.pack()
+
+    # Iesniegt poga
+    submit_button = tk.Button(submit_frame, text="Check", command=lambda: submit_entries(entries, grid[1], result_label))
+    submit_button.pack()
+
+    # Parādīt atbildes poga logs
+    answers_frame = tk.Frame(frame)
+    answers_frame.pack(pady=10)
+
+    # Parādīt atbildes poga
+    answers_button = tk.Button(answers_frame, text="Display Answers", command=lambda: display_answers(entries, grid[1]))
+    answers_button.pack()
+    
+    # Mēģināt vēlreiz poga
+    again_button = tk.Button(answers_frame, text="Try again", command=lambda: try_again(entries, grid[1]))
+    again_button.pack()     
+    
+    new_frame = tk.Frame(frame)
+    new_frame.pack(pady=10)
+
+    # Jautājumu parādīšanas virsraksts
+    new_label = tk.Label(new_frame, text="Jautājumi")
+    new_label.pack()  
+    
+    # divi rāmji priekš jautājumu grupām
+    bottom_labels_frame = tk.Frame(frame)
+    bottom_labels_frame.pack(side=tk.TOP, padx=10, pady=10)
+
+    
+    top_labels_frame = tk.Frame(frame)
+    top_labels_frame.pack(side=tk.TOP, padx=10, pady=10)
+    
+    #virsraksti
+    nos_text1_label = tk.Label(bottom_labels_frame, text="Horizontāli", font=('Helvetica', 11, 'bold'))
+    nos_text1_label.pack()
+
+    nos_text2_label = tk.Label(top_labels_frame, text="Vertikāli", font=('Helvetica', 11, 'bold'))
+    nos_text2_label.pack()
+    #iedalījums horizontālajos un vertikālajos
+    for item in vardnica1:
+        
+        label_text = f"{item['number']}{'.'} {item['question']}"
+        if item['orientation'] == 0:
+            
+            left_label = tk.Label(bottom_labels_frame, text=label_text, font=('Helvetica', 10))
+            left_label.pack()
+        if item['orientation'] == 1:
+            
+            right_label = tk.Label(top_labels_frame, text=label_text, font=('Helvetica', 10))
+            right_label.pack()
+
+            
+      
+
+    frame.mainloop()
+    return
+
+root = tk.Tk()
+def main():
+    
+    root.minsize(500, 500)
+
+    izveidot_miklu_poga = tk.Button(root, text="Izveidot jaunu krustvārdu mīklu", command=create_puzzle_view)
+    izveidot_miklu_poga.pack()
+
+    risinat_miklas_poga = tk.Button(root, text="Mīklu saraksts", command=choose_puzzle_view)
+    risinat_miklas_poga.pack()
+
+    root.mainloop()
+
 if __name__ == "__main__":
     main()

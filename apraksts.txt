@@ -7,9 +7,7 @@ o Saiti uz projekta GitHub (Gitlab, u.tml.) repozitoriju (gadījumā, ja tika iz
 
 
 o Projekta nosaukums: Krustvārdu mīklu veidošanas rīks/crossword generator
-o Grupas dalībnieku sarakstu - Nadīna Ozola no22001, 
-
-!!!! uzrakstiet savus apl. numurus un vārdus, uzvārdus !!!!
+o Grupas dalībnieku sarakstu - Nadīna Ozola no22001, Dārta Gobleja dg22039, Katrīna Pūpola kp22090
 
 o Īss programmas apraksts:
 Krustvārdu mīklu veidošanas rīks ļauj lietotājam ģenerēt krustvārdu mīklu un to atrisināt. 
@@ -24,7 +22,7 @@ o Instrukcijas kā palaist Jūsu programmu:
 - Lejupielādēt mapi ar failiem.
 - Atvērt kādu programmēšanas vidi.
 - Atvērt lejupielādēto mapi
-- Palaist gui.py failu.  
+- Palaist main.py failu.  
 
 2. Programma parādīs galveno ekrānu ar divām opcijām: "Izveidot jaunu krustvārdu mīklu", "Risināt mīklas"
 3. Uzspiežot uz "Izveidot jaunu krustvārdu mīklu", atvērsies logs, kur ir iespēja ievadīt atbildes un jautājumus, 

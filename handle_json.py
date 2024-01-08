@@ -1,4 +1,4 @@
-from main import *
+from grid_logic import *
 import json
 import os
 
