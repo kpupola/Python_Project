@@ -2,6 +2,7 @@ import tkinter as tk
 from main import *
 from handle_json import *
 from tkinter import messagebox
+from tkinter import simpledialog
 
 def close_top(top):
     # aizver Toplevel veida logu
@@ -16,6 +17,7 @@ def get_title_and_save(entries_array, miklas_nosaukums=''):
         miklas_no_faila = return_keys()
 
         # pārbauda, vai lietotāja ievadītais nosaukums ir unikāls
+        check = False
         while not check:
             if not miklas_nosaukums:
                 messagebox.showerror("Tukša ievade", "Lūdzu ievadiet mīklas nosaukumu!")
@@ -28,9 +30,12 @@ def get_title_and_save(entries_array, miklas_nosaukums=''):
     
     if miklas_nosaukums and check:
         save(miklas_nosaukums, entries_array)
+        return True
+    else:
+        return False
 
 def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=''):
-    #parent_window.destroy() # aizver iepriekšējo logu
+    close_top(parent_window) # aizver iepriekšējo logu
 
     window = tk.Toplevel(root)
     window.minsize(500, 500)
@@ -97,12 +102,16 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
         atpakal_poga = tk.Button(f, text="Atgriezties uz vārdu ievadi", command=lambda: close_top(window))
         atpakal_poga.grid(row=1, column=0)
 
+    close_poga = tk.Button(f, text="Aizvērt logu", command=lambda: close_top(window))
+    close_poga.grid(row=2, column=0)
     window.mainloop()
     return
 
 def get_input(ievade, parent_window, miklas_nosaukums=''):
+    # apstrādā lietotāja ievadi
     rezultats = parse_input(ievade)
     if rezultats[0] == True:
+        close_top(parent_window)
         atbildes_un_jautajumi = rezultats[1]
         generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums)
     
@@ -404,7 +413,7 @@ root.minsize(500, 500)
 izveidot_miklu_poga = tk.Button(root, text="Izveidot jaunu krustvārdu mīklu", command=create_puzzle_view)
 izveidot_miklu_poga.pack()
 
-risinat_miklas_poga = tk.Button(root, text="Risināt mīklas", command=choose_puzzle_view)
+risinat_miklas_poga = tk.Button(root, text="Mīklu saraksts", command=choose_puzzle_view)
 risinat_miklas_poga.pack()
 
 root.mainloop()

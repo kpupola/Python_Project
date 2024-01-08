@@ -1,23 +1,9 @@
 from main import *
 import json
 import os
-from tkinter import simpledialog
 
 file_name = "answer_keys.json" # faila nosaukums
-sample_puzzle = "Izmēģinājuma mīkla" # key vērtība izmēģinājuma mīklai
-
-sample_dict = [
-    {
-        "number" : 1,
-        "answer" : "dators",
-        "question" : "Kur dzīvo vīrusi"
-    },
-    {
-        "number" : 2,
-        "answer" : "bulcina",
-        "question" : "Labakas brokastis" 
-    }
-    ]
+sample_puzzle = "Izmēģinājuma mīkla" # key vērtība izmēģinājuma mīklai, ko nevar izdzēst
 
 def write_to_file(answer_key, title):
     # pievieno dict mīklu ar atbildēm un jautājumiem
@@ -145,12 +131,3 @@ def update_puzzle(puzzle_key, new_entries):
     
     with open(file_name, "w", encoding="utf8") as f:
         json.dump(data, f, indent=4)
-
-
-# write_to_file(sample_dict, "pirmā mīkla")
-# write_to_file(sample_dict, "otrā mīkla")
-# print(return_keys())
-# print(return_answers("Izmēģinājuma mīkla"))
-# print(return_puzzle("Izmēģinājuma mīkla"))
-#clear_file()
-# # print(combine_dict(return_answers("Izmēģinājuma mīkla"), return_questions("Izmēģinājuma mīkla")))
