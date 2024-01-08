@@ -55,16 +55,16 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
         if (rezgis[rinda + 1][kolonna] != ' ' and rezgis[rinda][kolonna + 1] != ' ') or (rezgis[rinda + 1][kolonna] != ' ' and rezgis[rinda][kolonna + 1] != ' '):
             return False
 
-        vertikals = is_vertical(rezgis, rinda, kolonna) #norāda virzienu vārdam, ar kuru krustosies
-        varda_garums = len(vards)
-        check = True
-        #vārda sākuma indeksa noteikšana
-        if not vertikals: # vārdu, kuru liksim režģī, jāliek perpendikulāri tam, ar ko krustosies
-            varda_sakums_rinda = rinda - burta_indekss
-            varda_sakums_kolonna = kolonna
-        else:
-            varda_sakums_rinda = rinda
-            varda_sakums_kolonna = kolonna - burta_indekss
+    vertikals = is_vertical(rezgis, rinda, kolonna) #norāda virzienu vārdam, ar kuru krustosies
+    varda_garums = len(vards)
+    check = True
+    #vārda sākuma indeksa noteikšana
+    if not vertikals: # vārdu, kuru liksim režģī, jāliek perpendikulāri tam, ar ko krustosies
+        varda_sakums_rinda = rinda - burta_indekss
+        varda_sakums_kolonna = kolonna
+    else:
+        varda_sakums_rinda = rinda
+        varda_sakums_kolonna = kolonna - burta_indekss
         
     # pārbauda, vai vārda garums neiziet ārpus režģa
     for i in range(varda_garums):
@@ -206,9 +206,10 @@ def populate_grid(saraksts):
     #Ievieto pirmo vārdu režģī
     place_word(rezgis, pirmais_vards, 0, 10, 10)
     #Nomaina pirmā vārda numuru uz 1
-    saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards][1], 0)
+    saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards], 0)
     #Pievieno pirmo ierakstu jaunas otrajam dictionarijam
     vards_jautajums2 = {pirmais_vards: saraksts[pirmais_vards]}
+    rezgis[10][9] = vards_jautajums2[pirmais_vards][0] 
     # Izdzēš pirmo saraksta vārdnīcas ierakstu
     saraksts.pop(next(iter(saraksts.keys()), None), None)
     
@@ -217,6 +218,7 @@ def populate_grid(saraksts):
     vardu_saraksts = list(saraksts.keys()) #vārdus, kas glabati kā keys, pārveido par vārdu sarakstu
     while vards_index < len(vardu_saraksts): # ejam cauri sarakstam 
           vards_ielikts = False
+          #vards = None
           vards = vardu_saraksts[vards_index]
           for burta_indekss, burts in enumerate(vards): # ejam cauri vārdam
               for rinda in range(GRID_SIZE):
@@ -230,6 +232,10 @@ def populate_grid(saraksts):
                               place_word(rezgis, vards, burta_indekss, rinda, kolonna)
                               vards_jautajums2[vards] = saraksts[vards] #pievieno otrajai vardnicai ierakstu, kas bāzēta uz konkrēto vārdu
                               vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards], orientation) #nomaina ieraksta numuru uz vārda numuru
+                              if orientation == 0:
+                                  rezgis[rinda][kolonna - burta_indekss - 1] = vards_jautajums2[vards][0] 
+                              else:
+                                  rezgis[rinda - burta_indekss - 1][kolonna] = vards_jautajums2[vards][0] 
                               varda_nr += 1
                               del saraksts[vards] #izdzēšs no pirmās vārdnīcas ierakstu, kas satur vārdu
                               vardu_saraksts.pop(vards_index) #izdzēš vārdu no vardu_saraksts
@@ -243,21 +249,24 @@ def populate_grid(saraksts):
               if vards_ielikts:
                   break
           vards_index += 1
+          #print(vards_index)
 
-    if not saraksts: #ja izdodas izveidot režģi
+    if not saraksts:
          vardnica = alter_dict(vards_jautajums2)
          print('Vardi izvietoti veiksmigi')
          return (vardnica, rezgis)
     else:
+        vardnica = alter_dict(vards_jautajums2)
         print('Nesanāca izveidot režģi')
-        return False 
+        #print(saraksts)
+        return False
     
-
 def varda_parbaude(vards):
     if len(vards)<= 2 or len(vards) > GRID_SIZE:
         return False
     else:
         return True
+
 
 def get_user_input():
 
@@ -286,9 +295,8 @@ def main():
              saraksts = shuffle_keys(lietotaja_saraksts.copy()) 
              return_values = populate_grid(saraksts)
              if return_values:
-                print(return_values[0])
-                print_grid(return_values[1])
-                
+                 print(return_values[0])
+                 print_grid(return_values[1])     
      #print_grid(empty_grid)
     
 if __name__ == "__main__":
