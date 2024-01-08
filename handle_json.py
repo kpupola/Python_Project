@@ -31,7 +31,7 @@ def save(miklas_nosaukums, entry_array):
             if file_size != 0:
                 file_data = json.load(file)
 
-    with open(file_name, "w") as file:
+    with open(file_name, "w", encoding="utf8") as file:
         if file_size != 0:
             file_data[miklas_nosaukums] = entry_array
             file.seek(0)
