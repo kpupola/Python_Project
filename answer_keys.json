@@ -4,39 +4,40 @@
             "number": 1, 
             "orientation": 0, 
             "answer": "tjūrings", 
-            "question": "earsetd"
+            "question": "Slavens datorzinātnieks Alans..."
         }, 
         {
             "number": 2, 
             "orientation": 1, 
             "answer": "python", 
-            "question": "awsert"
+            "question": "Kādā programmēšanas valodā šī spēlē ir veidota?"
         }, 
         {
             "number": 3, 
             "orientation": 0, 
             "answer": "lapsa", 
-            "question": "ert"
+            "question": "Dzīvnieks, kas pieminēts kādā interneta pārlūkprogrammā un Prāta Vētras dziesmā"
         }, 
         {
             "number": 4, 
             "orientation": 1, 
             "answer": "ģitāra", 
-            "question": "34trdy"
+            "question": "Mūzikas instruments ar 6 stīgām"
         }, 
         {
             "number": 5, 
             "orientation": 0, 
             "answer": "kokakola", 
-            "question": "aesrt"
+            "question": "Populāra gāzēta limonāde"
         }, 
         {
             "number": 6, 
             "orientation": 1, 
             "answer": "zaļā", 
-            "question": "erst"
+            "question": "Indīgākā mušmire Latvijā"
         }
     ],
+    
     "pirm\u0101 m\u012bkla": [
         {
             "number": 1,

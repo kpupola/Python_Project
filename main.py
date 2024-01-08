@@ -24,6 +24,17 @@ def print_grid(rezgis):
             print(kolonna, end=" ")
         print()
 
+def return_grid_string(rezgis):
+    # Atgriež formatētu režģi kā stringu
+    grid_str = ''
+    for i in range(GRID_SIZE):
+        rinda_str = ''
+        for j in range(GRID_SIZE):
+            rinda_str = rinda_str + ' ' + str(rezgis[i][j])
+        if not rinda_str.isspace():
+            grid_str += rinda_str + '\n'
+    return grid_str
+
 # Funkcijas check_word_placement() parametri ir:
     # rezgis – divdimensionāls masīvs, kurš satur vārdus un ' ' tur, kur nav vārdu
     # vards – vārds, ko vēlas ielikt režģī
@@ -44,16 +55,16 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
         if (rezgis[rinda + 1][kolonna] != ' ' and rezgis[rinda][kolonna + 1] != ' ') or (rezgis[rinda + 1][kolonna] != ' ' and rezgis[rinda][kolonna + 1] != ' '):
             return False
 
-        vertikals = is_vertical(rezgis, rinda, kolonna) #norāda virzienu vārdam, ar kuru krustosies
-        varda_garums = len(vards) + 1
-        check = True
-        #vārda sākuma indeksa noteikšana
-        if not vertikals: # vārdu, kuru liksim režģī, jāliek perpendikulāri tam, ar ko krustosies
-            varda_sakums_rinda = rinda - burta_indekss
-            varda_sakums_kolonna = kolonna
-        else:
-            varda_sakums_rinda = rinda
-            varda_sakums_kolonna = kolonna - burta_indekss
+    vertikals = is_vertical(rezgis, rinda, kolonna) #norāda virzienu vārdam, ar kuru krustosies
+    varda_garums = len(vards)
+    check = True
+    #vārda sākuma indeksa noteikšana
+    if not vertikals: # vārdu, kuru liksim režģī, jāliek perpendikulāri tam, ar ko krustosies
+        varda_sakums_rinda = rinda - burta_indekss
+        varda_sakums_kolonna = kolonna
+    else:
+        varda_sakums_rinda = rinda
+        varda_sakums_kolonna = kolonna - burta_indekss
         
     # pārbauda, vai vārda garums neiziet ārpus režģa
     for i in range(varda_garums):
@@ -195,7 +206,7 @@ def populate_grid(saraksts):
     #Ievieto pirmo vārdu režģī
     place_word(rezgis, pirmais_vards, 0, 10, 10)
     #Nomaina pirmā vārda numuru uz 1
-    saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards][1], 0)
+    saraksts[pirmais_vards] = (varda_nr, saraksts[pirmais_vards], 0)
     #Pievieno pirmo ierakstu jaunas otrajam dictionarijam
     vards_jautajums2 = {pirmais_vards: saraksts[pirmais_vards]}
     rezgis[10][9] = vards_jautajums2[pirmais_vards][0] 
@@ -220,7 +231,7 @@ def populate_grid(saraksts):
                                   orientation = 1
                               place_word(rezgis, vards, burta_indekss, rinda, kolonna)
                               vards_jautajums2[vards] = saraksts[vards] #pievieno otrajai vardnicai ierakstu, kas bāzēta uz konkrēto vārdu
-                              vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards][1], orientation) #nomaina ieraksta numuru uz vārda numuru
+                              vards_jautajums2[vards] = (varda_nr, vards_jautajums2[vards], orientation) #nomaina ieraksta numuru uz vārda numuru
                               if orientation == 0:
                                   rezgis[rinda][kolonna - burta_indekss - 1] = vards_jautajums2[vards][0] 
                               else:
@@ -238,7 +249,7 @@ def populate_grid(saraksts):
               if vards_ielikts:
                   break
           vards_index += 1
-          print(vards_index)
+          #print(vards_index)
 
     if not saraksts:
          vardnica = alter_dict(vards_jautajums2)
@@ -247,8 +258,8 @@ def populate_grid(saraksts):
     else:
         vardnica = alter_dict(vards_jautajums2)
         print('Nesanāca izveidot režģi')
-        print(saraksts)
-        return (vardnica, rezgis)
+        #print(saraksts)
+        return False
     
 def varda_parbaude(vards):
     if len(vards)<= 2 or len(vards) > GRID_SIZE:

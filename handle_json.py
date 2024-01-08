@@ -82,7 +82,7 @@ def return_puzzle(puzzle_key):
     return puzzle
 
 # def clear_file(): #nestrādā
-#     # TODO: izdzēš visus faila datus, izņemot pirmo ierakstu
+#     # TODO: izdzēš visus f bnaila datus, izņemot pirmo ierakstu
 #     with open(file_name, "r+", encoding="utf8") as f:
 #         if os.stat(file_name).st_size != 0:
 #             data = json.load(f)
