@@ -116,12 +116,35 @@ def clear_file():
     
     with open(file_name, "w", encoding="utf8") as f:
         json.dump(data, f, indent=4)
-    return
+
+def delete_puzzle(puzzle_key):
+    # izdzēš konkrētu mīklu no faila
+    data = {}
+    with open(file_name, "r", encoding="utf8") as f:
+        if os.stat(file_name).st_size != 0:
+            data = json.load(f)
+            keys = data.copy().keys()
+            for key in keys:
+                if key == puzzle_key:
+                    del data[key]
+    
+    with open(file_name, "w", encoding="utf8") as f:
+        json.dump(data, f, indent=4)
 
 def update_puzzle(puzzle_key, new_entries):
     # new_entries ir saraksts formātā [{"number": .., "orientation": .., "answer": .., "question": ..}, {...}, ...]
     # pieliek konkrētajai puzlei klāt jaunus ierakstus
-    return
+    data = {}
+    with open(file_name, "r", encoding="utf8") as f:
+        if os.stat(file_name).st_size != 0:
+            data = json.load(f)
+            keys = data.copy().keys()
+            for key in keys:
+                if key == puzzle_key:
+                    data[key] = new_entries
+    
+    with open(file_name, "w", encoding="utf8") as f:
+        json.dump(data, f, indent=4)
 
 
 # write_to_file(sample_dict, "pirmā mīkla")

@@ -158,7 +158,11 @@ def parse_input(text):
         return False, ""
     else:
         return True, dictionary
-
+    
+def update_puzzle_view(parent_window, puzzle_key):
+    # attēlo konkrētās mīklas saturu ar opciju to atjaunot
+    return
+    
 def choose_puzzle_view():
     window = tk.Toplevel(root)
     window.minsize(500, 500)
@@ -166,18 +170,52 @@ def choose_puzzle_view():
     f = tk.Frame(window)
     f.pack()
 
-    # saraksts ar izveidotajām puzlēm, no kura vienu var izvēlēties
-    izvelies_miklu = tk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!")
-    izvelies_miklu.grid(row=0, column=0)
-    miklu_nosakumi = return_keys()
-    for i in range(len(miklu_nosakumi)):
-        b = tk.Button(f, text=miklu_nosakumi[i], command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key))
-        b.grid(row=i + 1, column=0)
+    def refresh_frame():
+        # atjauno skatu ar jaunāko info no faila
+        for item in f.winfo_children():
+            item.destroy()
+        display_frame()
+
+    def delete_puzzle_refresh(puzzle_key):
+        # izdzēš konkrētu mīklu un atjauno skatu
+        delete_puzzle(puzzle_key)
+        refresh_frame()
+
+    def clear_list():
+        # izdzēš visu sarakstu un atjauno skatu
+        clear_file()
+        refresh_frame()
+
+    def display_frame():
+        # saraksts ar izveidotajām puzlēm, no kura vienu var izvēlēties
+        izvelies_miklu = tk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!")
+        izvelies_miklu.grid(row=0, column=0)
+        miklu_nosakumi = return_keys()
+        for i in range(len(miklu_nosakumi)):
+            # poga, kas aizved uz mīklas risināšanas logu
+            solve_but = tk.Button(f, text=miklu_nosakumi[i], command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key))
+            solve_but.grid(row=i + 2, column=0)
+
+            if miklu_nosakumi[i] != "Izmēģinājuma mīkla":
+                # poga, kas aizved uz mīklas rediģēšanas logu
+                update_but = tk.Button(f, text="Rediģēt mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: update_puzzle_view(window, puzzle_key))
+                update_but.grid(row=i + 2, column=1)
+
+                # poga, kas izdzēš mīklu no saraksta
+                delete_but = tk.Button(f, text="Izdzēst mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: delete_puzzle_refresh(puzzle_key))
+                delete_but.grid(row=i + 2, column=2)
+
+        delete_all_but = tk.Button(f, text="Izdzēst visas mīklas no saraksta", command=clear_list)
+        if len(miklu_nosakumi) == 1:
+            delete_all_but.config(state="disabled")
+        delete_all_but.grid(row=1, column=0)
+    
+    display_frame()
+
     window.mainloop()
 
 def solve_puzzle_view(frame, puzzle_key):
- 
-#izsauc funkcijas, kas atgriež atbildes, jautājumus un funkcija, kas saliek kopā tos vārdnīcas formātā
+    # izsauc funkcijas, kas atgriež atbildes, jautājumus un funkcija, kas saliek kopā tos vārdnīcas formātā
     atbildes=return_answers(puzzle_key)
     jautajumi=return_questions(puzzle_key)
     vardnica=combine_dict(atbildes, jautajumi)
@@ -197,7 +235,6 @@ def solve_puzzle_view(frame, puzzle_key):
  #izveido krustvārdu mīklas režģi
     def create_window(grid, parent_frame):
         entries = []
-
         for i, row in enumerate(grid):
             entry_row = []
             for j, value in enumerate(row):
@@ -216,7 +253,6 @@ def solve_puzzle_view(frame, puzzle_key):
                 else:
                     entry_row.append('')
             entries.append(entry_row)
-
         return entries # Atgriež ievades lauciņu sarakstu
 
     def submit_entries(entries, grid, result_label):
@@ -241,14 +277,12 @@ def solve_puzzle_view(frame, puzzle_key):
             for j, value in enumerate(row):
                 if value != ' ' and entered_values[i][j] != value and entries[i][j] != '':
                     entries[i][j].config(bg="red")
-
         # pārbauda vai ir pareizi un uzvarēšanas paziņojums
         if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' ' and entries[i][j] != ''):
             result_label.config(text="Congratulations! You win!", fg="red")
         else:
             result_label.config(text="Incorrect input! Try again.", fg="red")
 
-    
 #parāda atbildes
     def display_answers(entries, grid):
         for i, row in enumerate(grid):
@@ -263,13 +297,10 @@ def solve_puzzle_view(frame, puzzle_key):
                 if value != ' ' and entries[i][j] != '':
                     entries[i][j].delete(0, tk.END)
                     entries[i][j].insert(0, '')
-
-
    
     # Krustvārdu mīklas režģa logs
     crossword_frame = tk.Frame(frame)
     crossword_frame.pack(pady=10)
-    
 
     entries = create_window(grid[1], crossword_frame)
         
