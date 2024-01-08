@@ -206,8 +206,8 @@ def update_puzzle_view(parent_window, puzzle_key):
     izveidot_poga.grid(row=3, column=0)
 
     window.mainloop()
+  
 
-    
 def choose_puzzle_view():
     window = tk.Toplevel(root)
     window.minsize(500, 500)
@@ -231,8 +231,8 @@ def choose_puzzle_view():
         clear_file()
         refresh_frame()
 
+#Funkcija, kas atgriež sarakstu ar izveidotajām puzlēm, no kura vienu var izvēlēties
     def display_frame():
-        # saraksts ar izveidotajām puzlēm, no kura vienu var izvēlēties
         izvelies_miklu = tk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!")
         izvelies_miklu.grid(row=0, column=0)
         miklu_nosakumi = return_keys()
