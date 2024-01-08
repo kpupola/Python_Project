@@ -4,11 +4,12 @@ from handle_json import *
 from tkinter import messagebox
 from tkinter import simpledialog
 
+# aizver Toplevel veida logu
 def close_top(top):
-    # aizver Toplevel veida logu
     top.destroy()
     top.update()
 
+#Funckija, kas pievieno mīklai nosaukumu un saglabā to
 def get_title_and_save(parent_window, entries_array, miklas_nosaukums=''):
 
     check = True
@@ -35,6 +36,7 @@ def get_title_and_save(parent_window, entries_array, miklas_nosaukums=''):
     else:
         return False
 
+#Funkcija, kas lietotāja ievadītos vārdus saliek režģī
 def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=''):
     close_top(parent_window) # aizver iepriekšējo logu
 
@@ -69,8 +71,8 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
 
     grid_box.grid(row=0, column=0) # izvieto teksta lauku
 
+    # Funkcija, kas ievieto teksta laukā dažādus variantus režģim
     def print_rezgis():
-        # funkcija, kas ievieto teksta laukā dažādus variantus režģim
         grid_box.config(state="normal")
         grid_box.delete("1.0", tk.END)
         
@@ -110,14 +112,15 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
     window.mainloop()
     return
 
+# Funkcija, kas apstrādā lietotāja ievadi
 def get_input(ievade, parent_window, miklas_nosaukums=''):
-    # apstrādā lietotāja ievadi
     rezultats = parse_input(ievade)
     if rezultats[0] == True:
         close_top(parent_window)
         atbildes_un_jautajumi = rezultats[1]
         generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums)
-    
+
+#Funkcija, kas izveido skatu, kurā lietotājs ievada atbidles un jautājumus
 def create_puzzle_view(parent_window=None):
     if parent_window:
         close_top(parent_window)
@@ -141,7 +144,7 @@ def create_puzzle_view(parent_window=None):
 
     window.mainloop()
 
-#funkcija, kas sadala lietotaja texta inputu vardnicā ar vārdiem kā keys un to values kā - numurs (sākumā nulle), jautājums
+#Funkcija, kas pārbauda lietotāja ievadi un saliek to vārdnīcā
 def parse_input(text):
     lines = text.split('\n')
     dictionary = {}
@@ -150,10 +153,12 @@ def parse_input(text):
         if space_index != -1:
             word = line[:space_index].strip()
             question = line[space_index+1:].strip()
+            if len(word) < 2 or len(word) > GRID_SIZE:
+                messagebox.showerror("Ievades kļūda", "Vārds '{}' nav atsbilstošā izmērā.".format(word))
+                return False, ""
             if not word or not question:
                 messagebox.showerror("Ievades kļūda", "Tukšs vārds vai jautājums.")
                 return False, ""
-            
             if word.isalpha():
                 if dictionary and word in dictionary:
                     messagebox.showerror("Ievades kļūda",  "Vārds '{}' jau ir bijis ievietots mīklā divreiz.".format(word))
@@ -163,7 +168,7 @@ def parse_input(text):
             else:
                 messagebox.showerror("Kļūda", "Ievades kļūda: vārdā ir simboli, kas nav burti.")
                 return False, ""
-        elif line.strip():  #pārbauda, vai starp vārdu un jautājumu ir atstarpe
+        elif line.strip():  
             messagebox.showerror("Kļūda", "Ievades kļūda: nav atstarpju starp vārdu un jautājumu.")
             return False, ""
     if not dictionary:
@@ -172,8 +177,8 @@ def parse_input(text):
     else:
         return True, dictionary
     
+#Funkcija, kas attēlo konkrētās mīklas saturu ar opciju to atjaunot
 def update_puzzle_view(parent_window, puzzle_key):
-    # attēlo konkrētās mīklas saturu ar opciju to atjaunot
     close_top(parent_window)
 
     window = tk.Toplevel(root)
