@@ -18,7 +18,7 @@ Saglabātās mīklas is iespējams atrisināt, rediģēt un dzēst.
 
 
 o Instrukcijas kā palaist Jūsu programmu:
-1. Palaist programmu??? kā to uzrakstīt? palabojiet mani es īsti nezinu kā,
+1. Palaist programmu
 - Lejupielādēt mapi ar failiem.
 - Atvērt kādu programmēšanas vidi.
 - Atvērt lejupielādēto mapi
