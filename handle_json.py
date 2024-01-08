@@ -1,6 +1,7 @@
 from main import *
 import json
 import os
+from tkinter import simpledialog
 
 file_name = "answer_keys.json"
 
@@ -33,6 +34,46 @@ def write_to_file(answer_key, title):
             dict = {title:answer_key}
             json.dump(dict, file, indent=4)
     return True
+def save(dictionary):
+    mīklas_nosaukums = simpledialog.askstring("Nosaukums", "Ievadiet mīklas nosaukumu:")
+    if not mīklas_nosaukums:
+        print("Lūdzu, ievadiet mīklas nosaukumu!")
+        return False
+
+    file_name = "answer_keys.json"  # Aizpildiet ar vēlamo faila nosaukumu
+    with open(file_name, "r+", encoding="utf8") as file:
+        if os.stat(file_name).st_size != 0:
+            file_data = json.load(file)
+            if mīklas_nosaukums not in file_data:
+                # Mainīt nosaukumu no 'word' uz 'answer'
+                updated_dictionary = [
+                    {
+                        'number': item['number'],
+                        'orientation': item['orientation'],
+                        'answer': item['word'],
+                        'question': item['question'][1]
+                    } for item in dictionary
+                ]
+                file_data[mīklas_nosaukums] = updated_dictionary
+                file.seek(0)
+                json.dump(file_data, file, indent=4, ensure_ascii=False)
+            else:
+                print("Šāda mīkla jau eksistē! Izvēlies citu nosaukumu.")
+                return False
+        else:
+            # Mainīt nosaukumu no 'word' uz 'answer'
+            dict_to_save = {mīklas_nosaukums: [
+                {
+                    'number': item['number'],
+                    'orientation': item['orientation'],
+                    'answer': item['word'],
+                    'question': item['question'][1]
+                } for item in dictionary
+            ]}
+            json.dump(dict_to_save, file, indent=4, ensure_ascii=False)
+    return True
+
+
 
 def return_keys():
     # atgriež sarakstu ar krustvārdu mīklu nosaukumiem, kas saglabāti failā

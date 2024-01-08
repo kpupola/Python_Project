@@ -1,48 +1,47 @@
 {
-    "Izm\u0113\u0123in\u0101juma m\u012bkla": [
+    "Izmēģinājuma mīkla": [
         {
-            "number": 1, 
-            "orientation": 0, 
-            "answer": "tjūrings", 
+            "number": 1,
+            "orientation": 0,
+            "answer": "tjūrings",
             "question": "Slavens datorzinātnieks Alans..."
-        }, 
+        },
         {
-            "number": 2, 
-            "orientation": 1, 
-            "answer": "python", 
+            "number": 2,
+            "orientation": 1,
+            "answer": "python",
             "question": "Kādā programmēšanas valodā šī spēlē ir veidota?"
-        }, 
+        },
         {
-            "number": 3, 
-            "orientation": 0, 
-            "answer": "lapsa", 
+            "number": 3,
+            "orientation": 0,
+            "answer": "lapsa",
             "question": "Dzīvnieks, kas pieminēts kādā interneta pārlūkprogrammā un Prāta Vētras dziesmā"
-        }, 
+        },
         {
-            "number": 4, 
-            "orientation": 1, 
-            "answer": "ģitāra", 
+            "number": 4,
+            "orientation": 1,
+            "answer": "ģitāra",
             "question": "Mūzikas instruments ar 6 stīgām"
-        }, 
+        },
         {
-            "number": 5, 
-            "orientation": 0, 
-            "answer": "kokakola", 
+            "number": 5,
+            "orientation": 0,
+            "answer": "kokakola",
             "question": "Populāra gāzēta limonāde"
-        }, 
+        },
         {
-            "number": 6, 
-            "orientation": 1, 
-            "answer": "zaļā", 
+            "number": 6,
+            "orientation": 1,
+            "answer": "zaļā",
             "question": "Indīgākā mušmire Latvijā"
         }
     ],
-    
-    "pirm\u0101 m\u012bkla": [
+    "pirmā mīkla": [
         {
             "number": 1,
             "answer": "dators",
-            "question": "Kur dz\u012bvo v\u012brusi"
+            "question": "Kur dzīvo vīrusi"
         },
         {
             "number": 2,
@@ -50,16 +49,36 @@
             "question": "Labakas brokastis"
         }
     ],
-    "otr\u0101 m\u012bkla": [
+    "otrā mīkla": [
         {
             "number": 1,
             "answer": "dators",
-            "question": "Kur dz\u012bvo v\u012brusi"
+            "question": "Kur dzīvo vīrusi"
         },
         {
             "number": 2,
             "answer": "bulcina",
             "question": "Labakas brokastis"
+        }
+    ],
+    "jauna mikla": [
+        {
+            "number": 1,
+            "orientation": 0,
+            "answer": "aaaaccccaaaa",
+            "question": "bbbbb"
+        },
+        {
+            "number": 2,
+            "orientation": 1,
+            "answer": "ccaaaeecc",
+            "question": "ddddd"
+        },
+        {
+            "number": 3,
+            "orientation": 0,
+            "answer": "eeaacccee",
+            "question": "ffff"
         }
     ]
 }
