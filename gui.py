@@ -26,6 +26,7 @@ def get_title_and_save(parent_window, entries_array, miklas_nosaukums=''):
                 messagebox.showerror("Slikts nosaukums", "Mīkla ar tādu nosaukumu jau eksistē!")
                 break
             else:
+                messagebox.showinfo("Malacis!", "Mīkla veiksmīgi saglabāta!")
                 check = True
     
     if miklas_nosaukums and check:
