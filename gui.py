@@ -107,18 +107,18 @@ def parse_input(text):
         if space_index != -1:
             word = line[:space_index].strip()
             question = line[space_index+1:].strip()
-            if word.isalpha() and question.isalpha():
-                if word and question:
-                    if dictionary and word in dictionary:
-                        messagebox.showerror("Ievades kļūda",  "Vārds '{}' jau ir bijis ievietots mīklā divreiz.".format(word))
-                        return False, ""
-                    else:
-                        dictionary[word] = (0, question)
-                else:
-                    messagebox.showerror("Ievades kļūda", "Tukšs vārds vai jautājums.")
+            if not word or not question:
+                messagebox.showerror("Ievades kļūda", "Tukšs vārds vai jautājums.")
+                return False, ""
+            
+            if word.isalpha():
+                if dictionary and word in dictionary:
+                    messagebox.showerror("Ievades kļūda",  "Vārds '{}' jau ir bijis ievietots mīklā divreiz.".format(word))
                     return False, ""
+                else:
+                    dictionary[word] = (0, question)
             else:
-                messagebox.showerror("Kļūda", "Ievades kļūda: vārdā vai jautājumā ir simboli, kas nav burti.")
+                messagebox.showerror("Kļūda", "Ievades kļūda: vārdā ir simboli, kas nav burti.")
                 return False, ""
         elif line.strip():  #pārbauda, vai starp vārdu un jautājumu ir atstarpe
             messagebox.showerror("Kļūda", "Ievades kļūda: nav atstarpju starp vārdu un jautājumu.")
