@@ -169,10 +169,17 @@ def solve_puzzle_view(frame, puzzle_key):
             entry_row = []
             for j, value in enumerate(row):
                 if value != ' ': #izveido ievades lauciņus, tur kur nav tukšums
-                    entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center")
-                    entry.insert(0, '')  
-                    entry.grid(row=i, column=j, padx=1, pady=1)
-                    entry_row.append(entry)
+                    if str(value).isnumeric():
+                        index = tk.Text(parent_frame, width=3, height=1, borderwidth=1, relief="solid", font=('Helvetica', 10, 'bold'), cursor="arrow")
+                        index.insert("1.1", value)
+                        index.config(state="disabled", bg="#ffff99")
+                        index.grid(row=i, column=j)
+                        entry_row.append('')
+                    else:
+                        entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center")
+                        entry.insert(0, '')  
+                        entry.grid(row=i, column=j, padx=1, pady=1)
+                        entry_row.append(entry)
                 else:
                     entry_row.append('')
             entries.append(entry_row)
@@ -183,14 +190,14 @@ def solve_puzzle_view(frame, puzzle_key):
         # Atiestata ievadē esošo fona krāsu
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
-                if value != ' ':
+                if value != ' ' and entries[i][j] != '':
                     entries[i][j].config(bg="white")
         # saglabā ievades vērtības
         entered_values = []
         for i, row in enumerate(grid):
             entered_row = []
             for j, value in enumerate(row):
-                if value != ' ':
+                if value != ' ' and entries[i][j] != '':
                     entered_value = entries[i][j].get()
                     entered_row.append(entered_value)
                 else:
@@ -199,11 +206,11 @@ def solve_puzzle_view(frame, puzzle_key):
         #ja ir nepareizi, iekrāso sarkanu
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
-                if value != ' ' and entered_values[i][j] != value:
+                if value != ' ' and entered_values[i][j] != value and entries[i][j] != '':
                     entries[i][j].config(bg="red")
 
         # pārbauda vai ir pareizi un uzvarēšanas paziņojums
-        if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' '):
+        if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' ' and entries[i][j] != ''):
             result_label.config(text="Congratulations! You win!", fg="red")
         else:
             result_label.config(text="Incorrect input! Try again.", fg="red")
@@ -213,14 +220,14 @@ def solve_puzzle_view(frame, puzzle_key):
     def display_answers(entries, grid):
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
-                if value != ' ':
+                if value != ' ' and entries[i][j] != '':
                     entries[i][j].delete(0, tk.END)
                     entries[i][j].insert(0, value)
 #notīra krustvārdu mīklas ievades vērtības, lai sāktu no jauna                 
     def try_again(entries, grid):
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
-                if value != ' ':
+                if value != ' ' and entries[i][j] != '':
                     entries[i][j].delete(0, tk.END)
                     entries[i][j].insert(0, '')
 
