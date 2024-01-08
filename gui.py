@@ -9,7 +9,7 @@ def close_top(top):
     top.destroy()
     top.update()
 
-def get_title_and_save(entries_array, miklas_nosaukums=''):
+def get_title_and_save(parent_window, entries_array, miklas_nosaukums=''):
 
     check = True
     if not miklas_nosaukums:
@@ -30,6 +30,7 @@ def get_title_and_save(entries_array, miklas_nosaukums=''):
     
     if miklas_nosaukums and check:
         save(miklas_nosaukums, entries_array)
+        close_top(parent_window)
         return True
     else:
         return False
@@ -43,9 +44,9 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
     f = tk.Frame(window, bg="#f3f4f6")  
     f.pack(padx=20, pady=20)  
 
-    f = tk.Frame(window)
-    f.pack()
-    grid_box = tk.Text(f, width=40, height=20)
+    # f = tk.Frame(window)
+    # f.pack()
+    grid_box = tk.Text(f, width=60, height=40)
 
     #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
     saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
@@ -58,6 +59,7 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
             fail_count += 1
             if fail_count == 30:
                 grid_box.insert("1.0", "Ar šo vārdu sarakstu nav izdevies izveidot režģi, mēģini ievadīt citus vārdus.")
+                grid_box.config(width=40, height=5, wrap="word", state="disabled", bg="#e0777e")
                 break
     
     if return_values: # ja ir saņemts izdevies režģis
@@ -95,11 +97,11 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
         shuffle_poga.grid(row=1, column=0)
 
         # poga, ar kuru tiks saglabāts esošais variants režģim
-        save_poga = tk.Button(f, text="Saglabāt", command=lambda: get_title_and_save(return_values[0], miklas_nosaukums))
+        save_poga = tk.Button(f, text="Saglabāt", command=lambda: get_title_and_save(window, return_values[0], miklas_nosaukums))
         save_poga.grid(row=1, column=1) 
     else:
         # ja nav izdevies izveidot veiksmīgu režģi
-        atpakal_poga = tk.Button(f, text="Atgriezties uz vārdu ievadi", command=lambda: close_top(window))
+        atpakal_poga = tk.Button(f, text="Atgriezties uz vārdu ievadi", command= lambda: create_puzzle_view(window))
         atpakal_poga.grid(row=1, column=0)
 
     close_poga = tk.Button(f, text="Aizvērt logu", command=lambda: close_top(window))
@@ -115,7 +117,9 @@ def get_input(ievade, parent_window, miklas_nosaukums=''):
         atbildes_un_jautajumi = rezultats[1]
         generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums)
     
-def create_puzzle_view():
+def create_puzzle_view(parent_window=None):
+    if parent_window:
+        close_top(parent_window)
     window = tk.Toplevel(root)
     window.minsize(500, 500)
 
@@ -129,6 +133,7 @@ def create_puzzle_view():
     xscrollbar.grid(row=2, column=0, sticky='NSEW')
     ievade = tk.Text(f, height=12, width=45, wrap="none", xscrollcommand=xscrollbar.set)
     ievade.grid(row=1, column=0)
+    ievade.focus_set()
 
     izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade.get("1.0", tk.END), window))
     izveidot_poga.grid(row=3, column=0)
