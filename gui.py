@@ -66,7 +66,7 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
         shuffle_poga.grid(row=1, column=0)
         
         save_poga = tk.Button(f, text="Saglabāt", command=lambda: save(return_values[0]))
-        save_poga.grid(row=1, column=1) 
+        save_poga.grid(row=2, column=0) 
     else:
         atpakal_poga = tk.Button(f, text="Atgriezties uz vārdu ievadi", command=lambda: close_top(window))
         atpakal_poga.grid(row=1, column=0)
