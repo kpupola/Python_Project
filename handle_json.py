@@ -35,42 +35,23 @@ def write_to_file(answer_key, title):
             dict = {title:answer_key}
             json.dump(dict, file, indent=4)
     return True
-def save(dictionary):
-    mīklas_nosaukums = simpledialog.askstring("Nosaukums", "Ievadiet mīklas nosaukumu:")
-    if not mīklas_nosaukums:
-        print("Lūdzu, ievadiet mīklas nosaukumu!")
-        return False
 
-    file_name = "answer_keys.json"  # Aizpildiet ar vēlamo faila nosaukumu
-    with open(file_name, "r+", encoding="utf8") as file:
-        if os.stat(file_name).st_size != 0:
-            file_data = json.load(file)
-            if mīklas_nosaukums not in file_data:
-                # Mainīt nosaukumu no 'word' uz 'answer'
-                updated_dictionary = [
-                    {
-                        'number': item['number'],
-                        'orientation': item['orientation'],
-                        'answer': item['word'],
-                        'question': item['question'][1]
-                    } for item in dictionary
-                ]
-                file_data[mīklas_nosaukums] = updated_dictionary
-                file.seek(0)
-                json.dump(file_data, file, indent=4, ensure_ascii=False)
-            else:
-                print("Šāda mīkla jau eksistē! Izvēlies citu nosaukumu.")
-                return False
+def save(miklas_nosaukums, entry_array):
+    # pievieno jauno mīklu failam
+
+    file_data = {}
+    file_size = os.stat(file_name).st_size
+    with open(file_name, "r", encoding="utf8") as file:
+            if file_size != 0:
+                file_data = json.load(file)
+
+    with open(file_name, "w") as file:
+        if file_size != 0:
+            file_data[miklas_nosaukums] = entry_array
+            file.seek(0)
+            json.dump(file_data, file, indent=4, ensure_ascii=False)
         else:
-            # Mainīt nosaukumu no 'word' uz 'answer'
-            dict_to_save = {mīklas_nosaukums: [
-                {
-                    'number': item['number'],
-                    'orientation': item['orientation'],
-                    'answer': item['word'],
-                    'question': item['question'][1]
-                } for item in dictionary
-            ]}
+            dict_to_save = {miklas_nosaukums: entry_array}
             json.dump(dict_to_save, file, indent=4, ensure_ascii=False)
     return True
 
@@ -137,11 +118,16 @@ def clear_file():
         json.dump(data, f, indent=4)
     return
 
+def update_puzzle(puzzle_key, new_entries):
+    # new_entries ir saraksts formātā [{"number": .., "orientation": .., "answer": .., "question": ..}, {...}, ...]
+    # pieliek konkrētajai puzlei klāt jaunus ierakstus
+    return
+
 
 # write_to_file(sample_dict, "pirmā mīkla")
 # write_to_file(sample_dict, "otrā mīkla")
 # print(return_keys())
 # print(return_answers("Izmēģinājuma mīkla"))
 # print(return_puzzle("Izmēģinājuma mīkla"))
-# clear_file()
+#clear_file()
 # # print(combine_dict(return_answers("Izmēģinājuma mīkla"), return_questions("Izmēģinājuma mīkla")))

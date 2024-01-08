@@ -4,8 +4,28 @@ from handle_json import *
 from tkinter import messagebox
 
 def close_top(top):
+    # aizver Toplevel veida logu
     top.destroy()
     top.update()
+
+def get_title_and_save(entries_array):
+    miklas_nosaukums = simpledialog.askstring("Nosaukums", "Ievadiet mīklas nosaukumu:")
+    miklas_no_faila = return_keys()
+
+    # pārbauda, vai lietotāja ievadītais nosaukums ir unikāls
+    check = False
+    while not check:
+        if not miklas_nosaukums:
+            messagebox.showerror("Tukša ievade", "Lūdzu ievadiet mīklas nosaukumu!")
+            break
+        elif miklas_nosaukums in miklas_no_faila:
+            messagebox.showerror("Sliks nosaukums", "Mīkla ar tādu nosaukumu jau eksistē!")
+            break
+        else:
+            check = True
+    
+    if miklas_nosaukums and check:
+        save(miklas_nosaukums, entries_array)
 
 def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
     #parent_window.destroy() # aizver iepriekšējo logu
@@ -18,7 +38,7 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
 
     f = tk.Frame(window)
     f.pack()
-    grid_box = tk.Text(f, width=60, height=30)
+    grid_box = tk.Text(f, width=40, height=20)
 
     #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
     saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
@@ -33,14 +53,15 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
                 grid_box.insert("1.0", "Ar šo vārdu sarakstu nav izdevies izveidot režģi, mēģini ievadīt citus vārdus.")
                 break
     
-    if return_values:
+    if return_values: # ja ir saņemts izdevies režģis
         grid = return_values[1]
-        grid_box.insert("1.0", return_grid_string(grid))
+        grid_box.insert("1.0", return_grid_string(grid)) 
         grid_box.config(state="disabled")
 
-    grid_box.grid(row=0, column=0)
-    def print_rezgis():
+    grid_box.grid(row=0, column=0) # izvieto teksta lauku
 
+    def print_rezgis():
+        # funkcija, kas ievieto teksta laukā dažādus variantus režģim
         grid_box.config(state="normal")
         grid_box.delete("1.0", tk.END)
         
@@ -48,11 +69,11 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
         saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
         return_values = populate_grid(saraksts)
 
-        while not return_values:
+        while not return_values: # nodrošina, ka tiek izprintēti tikai režģi, kas ir izdevušies
             saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
             return_values = populate_grid(saraksts)
         
-        if return_values:
+        if return_values: # ja ir saņemts izdevies režģis
             grid = return_values[1]
             grid_box.insert("1.0", return_grid_string(grid))
             grid_box.config(state="disabled")
@@ -61,13 +82,16 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi):
             grid_box.insert("1.0", "Nesanāca :(")
             grid_box.config(state="disabled")
 
-    if return_values: 
+    if return_values: # ja ir saņemts izdevies režģis
+        # poga, ar kuru izsauc print_rezgis(), kas uzģenerēs citu izkārtojumu
         shuffle_poga = tk.Button(f, text="Izveidot citu izkārtojumu", command=print_rezgis)
         shuffle_poga.grid(row=1, column=0)
-        
-        save_poga = tk.Button(f, text="Saglabāt", command=lambda: save(return_values[0]))
+
+        # poga, ar kuru tiks saglabāts esošais variants režģim
+        save_poga = tk.Button(f, text="Saglabāt", command=lambda: get_title_and_save(return_values[0]))
         save_poga.grid(row=1, column=1) 
     else:
+        # ja nav izdevies izveidot veiksmīgu režģi
         atpakal_poga = tk.Button(f, text="Atgriezties uz vārdu ievadi", command=lambda: close_top(window))
         atpakal_poga.grid(row=1, column=0)
 
@@ -122,7 +146,7 @@ def parse_input(text):
                     messagebox.showerror("Ievades kļūda",  "Vārds '{}' jau ir bijis ievietots mīklā divreiz.".format(word))
                     return False, ""
                 else:
-                    dictionary[word] = (0, question)
+                    dictionary[word] = question
             else:
                 messagebox.showerror("Kļūda", "Ievades kļūda: vārdā ir simboli, kas nav burti.")
                 return False, ""

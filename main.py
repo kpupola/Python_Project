@@ -198,7 +198,7 @@ def alter_dict(vardnica2):
         izmainita_vardnica.append({
             "number": number,
             "orientation": orientation,
-            "word": word,
+            "answer": word,
             "question": question
         })
 
