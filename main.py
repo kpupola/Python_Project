@@ -253,17 +253,20 @@ def choose_puzzle_view():
     display_frame()
 
     window.mainloop()
-
+    
+    
+#Funkcija, kas atver krustvārdu mīklas risināšanas skatu
 def solve_puzzle_view(frame, puzzle_key):
-    # izsauc funkcijas, kas atgriež atbildes, jautājumus un funkcija, kas saliek kopā tos vārdnīcas formātā
+    #Izsauc funkcijas, kas atgriež atbildes, jautājumus un funkcija, kas saliek kopā tos vārdnīcas formātā
     atbildes=return_answers(puzzle_key)
     jautajumi=return_questions(puzzle_key)
     vardnica=combine_dict(atbildes, jautajumi)
     grid=populate_grid(vardnica) 
     
+    
     vardnica1 = grid[0]
     
-    print(vardnica1)
+    
     print(vardnica)
     if not grid:
         return
@@ -295,6 +298,7 @@ def solve_puzzle_view(frame, puzzle_key):
             entries.append(entry_row)
         return entries # Atgriež ievades lauciņu sarakstu
 
+    #funkcija saglabās ievades vērtības un pārbauda vai tās sakrīt ar atbildēm
     def submit_entries(entries, grid, result_label):
         # Atiestata ievadē esošo fona krāsu
         for i, row in enumerate(grid):
