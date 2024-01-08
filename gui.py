@@ -13,18 +13,17 @@ def get_title_and_save(parent_window, entries_array, miklas_nosaukums=''):
 
     check = True
     if not miklas_nosaukums:
-        miklas_nosaukums = simpledialog.askstring("Nosaukums", "Ievadiet mīklas nosaukumu:")
+    
         miklas_no_faila = return_keys()
 
         # pārbauda, vai lietotāja ievadītais nosaukums ir unikāls
         check = False
         while not check:
+            miklas_nosaukums = simpledialog.askstring("Nosaukums", "Ievadiet mīklas nosaukumu:")
             if not miklas_nosaukums:
                 messagebox.showerror("Tukša ievade", "Lūdzu ievadiet mīklas nosaukumu!")
-                break
             elif miklas_nosaukums in miklas_no_faila:
                 messagebox.showerror("Slikts nosaukums", "Mīkla ar tādu nosaukumu jau eksistē!")
-                break
             else:
                 check = True
     
@@ -86,6 +85,7 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
             grid = return_values[1]
             grid_box.insert("1.0", return_grid_string(grid))
             grid_box.config(state="disabled")
+            grid_box.focus_set()
             grid_box.grid(row=0, column=0)
         else:
             grid_box.insert("1.0", "Nesanāca :(")
