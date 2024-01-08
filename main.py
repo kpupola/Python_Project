@@ -290,7 +290,7 @@ def solve_puzzle_view(frame, puzzle_key):
                     if str(value).isnumeric():
                         index = tk.Text(parent_frame, width=3, height=1, borderwidth=1, relief="solid", font=('Helvetica', 10, 'bold'), cursor="arrow")
                         index.insert("1.1", value)
-                        index.config(state="disabled", bg="#ffff99")
+                        index.config(state="disabled", bg="pink")
                         index.grid(row=i, column=j)
                         entry_row.append('')
                     else:
@@ -414,9 +414,6 @@ def solve_puzzle_view(frame, puzzle_key):
             
             right_label = tk.Label(top_labels_frame, text=label_text, font=('Helvetica', 10))
             right_label.pack()
-
-            
-      
 
     frame.mainloop()
     return

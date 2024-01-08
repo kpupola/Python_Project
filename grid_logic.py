@@ -17,15 +17,15 @@ def shuffle_keys(saraksts):
     
     return shuffled_dict
 
+#Funkcija, kas izprintē režģi konsolē
 def print_grid(rezgis):
-    #Izprintē režģi konsolē
     for rinda in rezgis:
         for kolonna in rinda:
             print(kolonna, end=" ")
         print()
 
+#Funkcija, kas atgriež formatētu režģi kā stringu
 def return_grid_string(rezgis):
-    # Atgriež formatētu režģi kā stringu
     grid_str = ''
     for i in range(GRID_SIZE):
         rinda_str = ''
@@ -159,14 +159,7 @@ def check_word_placement(rezgis, vards, burta_indekss, rinda, kolonna):
 
     return check
 
-# Funkcijas place_word() parametri:
-    # rezgis – divdimensionāls masīvs, kurš satur vārdus un ' ' tur, kur nav vārdu
-    # vards – vārds, ko vēlas ielikt režģī
-    # burta_indekss – burta indekss vārdā (vards), kurš sakrīt ar burtu režģī
-    # rinda – rindas indekss burtam režģī, kurš sakrīt ar vards[burta_indekss]
-    # kolonna – kolonnas indekss burtam režģī, kurš sakrīt ar vards[burta_indekss]
-    #
-    #Ievieto vārdu režģī noteiktā vietā
+    #Funkcija, kas ievieto vārdu režģī noteiktā vietā
 def place_word(rezgis, vards, burta_indekss, rinda, kolonna):
 
     if is_vertical(rezgis, rinda, kolonna):
@@ -177,12 +170,7 @@ def place_word(rezgis, vards, burta_indekss, rinda, kolonna):
             rezgis[rinda - burta_indekss + i][kolonna] = vards[i]
     return
 
-# Funkcijas is_vertical() parametri:
-    # rezgis – divdimensionāls masīvs, kurš satur vārdus un ' ' tur, kur nav vārdu
-    # rinda – rindas indekss burtam režģī, kurš ir daļa no vārda
-    # kolonna – kolonnas indekss burtam režģī, kurš ir daļa no vārda
-    #
-    # Atgriež True, ja vārds ir vertikāls; False, ja horizontāls
+# Funkcija, kas nosaka, vai vārds režģī ir horizontālā vai vertikālā virzienā
 def is_vertical(rezgis, row, col):
     if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
         if col != 0:
@@ -190,7 +178,7 @@ def is_vertical(rezgis, row, col):
                 return True
     return False
 
-#pārveido vārdnīcu vajadzīgajā formā
+#Funkcija, kas pārveido vārdnīcu vajadzīgajā formā
 def alter_dict(vardnica2):
     izmainita_vardnica = []
 
@@ -204,6 +192,8 @@ def alter_dict(vardnica2):
 
     return izmainita_vardnica
 
+#Funkcija, kas iziet cauri vārdu sarakstam un režģim, un, atrodot vienādos burtus, izejot cauri pārbaudēm, ievieto vārdus sarakstā
+#Papildus darbojas ar vārdnīcām- no vienas ņem vārdus ārā, otrā liek iekšā, tos numurējot un pievienojot virzienu tiem
 def populate_grid(saraksts):
 
     vards_jautajums2 = {}
@@ -269,42 +259,3 @@ def populate_grid(saraksts):
         print('Nesanāca izveidot režģi')
         #print(saraksts)
         return False
-    
-def varda_parbaude(vards):
-    if len(vards)<= 2 or len(vards) > GRID_SIZE:
-        return False
-    else:
-        return True
-
-
-def get_user_input():
-
-    vards_jautajums = {}
-    while True:
-        word = input("Ievadiet vārdu (vai 'viss', lai pabeigtu): ").strip().lower()
-        if word == 'viss':
-            break
-        question = input ("Ievadiet vārdam atbilstošo jautājumu: ").strip().lower()
-        # Check if the key already exists in the dictionary
-        if vards_jautajums and word in vards_jautajums:
-                print("Vārds {} jau ir bijis ievietots mīklā. Lūdzu ievadiet citu vārdu!".format(word))
-        else:
-            if varda_parbaude(word) == False:
-                print("Vārds {} nav atbilstošā izmērā. Lūdzu ievadiet citu vārdu!".format(word))
-            else:
-                vards_jautajums[word] = (0, question, 0) # (nr pec kartas, jautajums, orientacija (0-horizontals, 1-vertikals))
-    return vards_jautajums
-
-def cli_interface():
-    lietotaja_saraksts = get_user_input()
-    if not lietotaja_saraksts:
-           print('Saraksts ir tukss, ievadiet kadu vardu!')
-    else:
-        for i in range(len(lietotaja_saraksts) + int(len(lietotaja_saraksts)/2)):
-             saraksts = shuffle_keys(lietotaja_saraksts.copy()) 
-             return_values = populate_grid(saraksts)
-             if return_values:
-                 print(return_values[0])
-                 print_grid(return_values[1])     
-
-# cli_interface()
