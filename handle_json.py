@@ -3,7 +3,8 @@ import json
 import os
 from tkinter import simpledialog
 
-file_name = "answer_keys.json"
+file_name = "answer_keys.json" # faila nosaukums
+sample_puzzle = "Izmēģinājuma mīkla" # key vērtība izmēģinājuma mīklai
 
 sample_dict = [
     {
@@ -107,7 +108,6 @@ def return_questions(puzzle_key):
 def combine_dict(answers, questions):
     # apvieno atbilžu un jautājumu sarakstu vārdnīcā
     # tādā formātā, kas atbilst populate_grid() funkcijai
-    
     dict = {}
     for i in range(len(answers)):
         dict[answers[i]] = questions[i]
@@ -122,16 +122,20 @@ def return_puzzle(puzzle_key):
             puzzle = data[puzzle_key]
     return puzzle
 
-# def clear_file(): #nestrādā
-#     # TODO: izdzēš visus f bnaila datus, izņemot pirmo ierakstu
-#     with open(file_name, "r+", encoding="utf8") as f:
-#         if os.stat(file_name).st_size != 0:
-#             data = json.load(f)
-#             pirmais_ieraksts = {"Izmēģinājuma mīkla" : data["Izmēģinājuma mīkla"]}
-#             print(pirmais_ieraksts)
-#             f.seek(0)
-#             json.dump(pirmais_ieraksts, f, indent=4)
-#     return
+def clear_file(): 
+    # izdzēš visus faila datus, izņemot pirmo ierakstu (izmēģinājuma mīklu)
+    data = {}
+    with open(file_name, "r", encoding="utf8") as f:
+        if os.stat(file_name).st_size != 0:
+            data = json.load(f)
+            keys = data.copy().keys()
+            for key in keys:
+                if key != sample_puzzle:
+                    del data[key]
+    
+    with open(file_name, "w", encoding="utf8") as f:
+        json.dump(data, f, indent=4)
+    return
 
 
 # write_to_file(sample_dict, "pirmā mīkla")
@@ -139,5 +143,5 @@ def return_puzzle(puzzle_key):
 # print(return_keys())
 # print(return_answers("Izmēģinājuma mīkla"))
 # print(return_puzzle("Izmēģinājuma mīkla"))
-# #clear_file()
-# print(combine_dict(return_answers("Izmēģinājuma mīkla"), return_questions("Izmēģinājuma mīkla")))
+# clear_file()
+# # print(combine_dict(return_answers("Izmēģinājuma mīkla"), return_questions("Izmēģinājuma mīkla")))
