@@ -49,8 +49,6 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
     f = tk.Frame(window, bg="#f3f4f6")  
     f.pack(padx=20, pady=20)  
 
-    # f = tk.Frame(window)
-    # f.pack()
     grid_box = tk.Text(f, width=60, height=40)
 
     #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
@@ -130,21 +128,29 @@ def create_puzzle_view(parent_window=None):
     window = tk.Toplevel(root)
     window.title('Krustvārdu mīklas izveide')
     window.minsize(500, 500)
+    window.configure(background='#E75480')
 
-    f = tk.Frame(window)
+    f = tk.Frame(window, bg='#E75480')
     f.pack()
 
+    label_style = ttk.Style(window)
+    label_style.configure('CustomLabel.TLabel', font=('Arial', 14, 'bold'), padding=10, foreground='white', background='#E75480')
+    #button_style = ttk.Style(window)
+    #utton_style.configure('CustomButton.TButton', font=('Arial', 12), padding=10, foreground='black', background='red')
+
     # user text input ar atbildēm un jautājumiem
-    ievadi_vardus_label = tk.Label(f, text="Ievadi atbildes un jautājumus zemāk!\nIevadi atsevišķu atbildi un jautājumu jaunā rindiņā.\nFormāts: atbilde[atstarpe]jautājums")
+    ievadi_vardus_label = ttk.Label(f, text="Ievadi atbildes un jautājumus zemāk!\nIevadi atsevišķu atbildi un jautājumu jaunā rindiņā.\nFormāts: atbilde[atstarpe]jautājums", style='CustomLabel.TLabel')
     ievadi_vardus_label.grid(row=0, column=0)
-    xscrollbar = tk.Scrollbar(f, orient="horizontal")
+
+    xscrollbar = tk.Scrollbar(f, orient="horizontal", width=20)
     xscrollbar.grid(row=2, column=0, sticky='NSEW')
-    ievade = tk.Text(f, height=12, width=45, wrap="none", xscrollcommand=xscrollbar.set)
+
+    ievade = tk.Text(f, height=20, width=45, wrap="none", xscrollcommand=xscrollbar.set, bg='pink')
     ievade.grid(row=1, column=0)
     ievade.focus_set()
 
-    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade.get("1.0", tk.END), window))
-    izveidot_poga.grid(row=3, column=0)
+    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade.get("1.0", tk.END), window), font=('Arial', 12))
+    izveidot_poga.grid(row=12, column=0)
 
     window.mainloop()
 
@@ -242,10 +248,10 @@ def choose_puzzle_view():
 #Funkcija, kas atgriež sarakstu ar izveidotajām puzlēm, no kura vienu var izvēlēties
     def display_frame():
         style = ttk.Style(window)
-        style.configure('TButton', font=('Arial', 14), padding=10, foreground='black', background='#C21807')
+        style.configure('TButton', font=('Arial', 13), padding=10, foreground='black', background='#C21807')
         style.configure('TLabel', font=('Arial', 18, 'bold'), padding=5, foreground='white', background='#E75480')
-        style.configure('Pink.TButton', font=('Arial', 14,'bold'), padding=10, foreground='black', background='#E75480')
-        style.configure('Red.TButton', font=('Arial', 14), padding=10, foreground='#8B0000', background='#E75480')
+        style.configure('Pink.TButton', font=('Arial', 13,'bold'), padding=10, foreground='#8B0000', background='#E75480')
+        style.configure('Red.TButton', font=('Arial', 13), padding=10, foreground='#8B0000', background='#E75480')
 
         izvelies_miklu = ttk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!", style='TLabel')
         izvelies_miklu.grid(row=0, column=0, columnspan=5, pady=10)
