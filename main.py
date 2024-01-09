@@ -3,6 +3,7 @@ from grid_logic import *
 from handle_json import *
 from tkinter import messagebox
 from tkinter import simpledialog
+from tkinter import ttk
 
 # aizver Toplevel veida logu
 def close_top(top):
@@ -21,6 +22,8 @@ def get_title_and_save(parent_window, entries_array, miklas_nosaukums=''):
         check = False
         while not check:
             miklas_nosaukums = simpledialog.askstring("Nosaukums", "Ievadiet mīklas nosaukumu:")
+            if miklas_nosaukums == None:
+                break
             if not miklas_nosaukums:
                 messagebox.showerror("Tukša ievade", "Lūdzu ievadiet mīklas nosaukumu!")
             elif miklas_nosaukums in miklas_no_faila:
@@ -125,6 +128,7 @@ def create_puzzle_view(parent_window=None):
     if parent_window:
         close_top(parent_window)
     window = tk.Toplevel(root)
+    window.title('Krustvārdu mīklas izveide')
     window.minsize(500, 500)
 
     f = tk.Frame(window)
@@ -183,6 +187,7 @@ def update_puzzle_view(parent_window, puzzle_key):
 
     window = tk.Toplevel(root)
     window.minsize(500, 500)
+    window.title('Krustvārdu mīklas rediģēšana')
 
     f = tk.Frame(window)
     f.pack()
@@ -211,6 +216,7 @@ def update_puzzle_view(parent_window, puzzle_key):
 def choose_puzzle_view():
     window = tk.Toplevel(root)
     window.minsize(500, 500)
+    window.title('Krustvārdu mīklu izvēle')
 
     f = tk.Frame(window)
     f.pack()
@@ -278,6 +284,7 @@ def solve_puzzle_view(frame, puzzle_key):
 
     frame = tk.Toplevel(root)
     f = tk.Frame(frame)
+    frame.title('Krustvārdu mīklas risināšana')
     f.pack()
     
  #izveido krustvārdu mīklas režģi
@@ -422,12 +429,28 @@ root = tk.Tk()
 def main():
     
     root.minsize(500, 500)
+    root.title('Krustvārdu mīklas')
+    root.configure(background='pink')
 
-    izveidot_miklu_poga = tk.Button(root, text="Izveidot jaunu krustvārdu mīklu", command=create_puzzle_view)
-    izveidot_miklu_poga.pack()
+    style = ttk.Style(root)
+    style.configure('TButton', font=('Arial', 14), padding=10, foreground='black')
+    style.configure('TLabel', font=('Arial', 20, 'bold'), padding=5, foreground='white', background='pink')
+    style.configure('TFrame', background='pink')
 
-    risinat_miklas_poga = tk.Button(root, text="Mīklu saraksts", command=choose_puzzle_view)
-    risinat_miklas_poga.pack()
+    # Main Frame
+    main_frame = ttk.Frame(root)
+    main_frame.pack(pady=50, padx=100, fill='both', expand=True)
+
+    # Title Label
+    title_label = ttk.Label(main_frame, text="Krustvārdu mīklas", style='TLabel')
+    title_label.pack(pady=20)
+
+    # Buttons
+    izveidot_miklu_poga = ttk.Button(main_frame, text="Izveidot jaunu krustvārdu mīklu", command=create_puzzle_view)
+    izveidot_miklu_poga.pack(pady=10, padx=50, fill='x')
+
+    risinat_miklas_poga = ttk.Button(main_frame, text="Mīklu saraksts", command=choose_puzzle_view)
+    risinat_miklas_poga.pack(pady=10, padx=50, fill='x')
 
     root.mainloop()
 
