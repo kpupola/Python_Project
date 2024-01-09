@@ -310,24 +310,28 @@ def solve_puzzle_view(frame, puzzle_key):
     frame = tk.Toplevel(root)
     frame.minsize(600, 500)
     f = tk.Frame(frame)
+    frame.configure(background='#FFB5C5')
     frame.title('Krustvārdu mīklas risināšana')
     f.pack()
     
  #izveido krustvārdu mīklas režģi
     def create_window(grid, parent_frame):
+        parent_frame.configure(background='#FFB5C5')
         entries = []
         for i, row in enumerate(grid):
             entry_row = []
             for j, value in enumerate(row):
                 if value != ' ': #izveido ievades lauciņus, tur kur nav tukšums
                     if str(value).isnumeric():
-                        index = tk.Text(parent_frame, width=3, height=1, borderwidth=1, relief="solid", font=('Helvetica', 10, 'bold'), cursor="arrow")
+                        index = tk.Text(parent_frame, width=3, height=1, borderwidth=1, relief="solid", font=('Arial', 10, 'bold'), cursor="arrow")
                         index.insert("1.1", value)
-                        index.config(state="disabled", bg="pink")
+                        index.config(state="disabled", bg="#E75480")
+                        index.tag_configure("center", justify="center")
+                        index.tag_add("center", "1.0", "end")
                         index.grid(row=i, column=j)
                         entry_row.append('')
                     else:
-                        entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center")
+                        entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Arial', 12, 'bold'), justify="center")
                         entry.insert(0, '')  
                         entry.grid(row=i, column=j, padx=1, pady=1)
                         entry_row.append(entry)
@@ -361,9 +365,10 @@ def solve_puzzle_view(frame, puzzle_key):
                     entries[i][j].config(bg="red")
         # pārbauda vai ir pareizi un uzvarēšanas paziņojums
         if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' ' and entries[i][j] != ''):
-            result_label.config(text="Apsveicam! Tu uzvarēji!", fg="green")
+            result_label.config(text="Apsveicam! Tu atrisināji!", fg="white",font=('Arial', 15, 'bold'))           
         else:
-            result_label.config(text="Nepareizi! Mēģini vēlreiz.", fg="red")
+            result_label.config(text="Nepareizi! Izlabo kļūdas!", fg="red",font=('Arial', 13))
+            
 
 #parāda atbildes
     def display_answers(entries, grid):
@@ -373,7 +378,8 @@ def solve_puzzle_view(frame, puzzle_key):
                     entries[i][j].delete(0, tk.END)
                     entries[i][j].insert(0, value)
 #notīra krustvārdu mīklas ievades vērtības, lai sāktu no jauna                 
-    def try_again(entries, grid):
+    def try_again(entries, grid, result_label):
+        result_label.config(text="") 
         for i, row in enumerate(grid):
             for j, value in enumerate(row):
                 if value != ' ' and entries[i][j] != '':
@@ -387,53 +393,58 @@ def solve_puzzle_view(frame, puzzle_key):
     entries = create_window(grid[1], crossword_frame)
         
     # Iesniegt pogas logs
-    submit_frame = tk.Frame(frame)
+    submit_frame = tk.Frame(frame,bg="#FFB5C5")
     submit_frame.pack(pady=10)
+    
+    
+    
 
     # Rezultāta etiķetes logs
     result_frame = tk.Frame(frame)
     result_frame.pack()
 
     # Rezultāta etiķete
-    result_label = tk.Label(result_frame, text="", font=('Helvetica', 12, 'bold'))
+    result_label = tk.Label(result_frame, text="", font=('Arial', 9, 'bold'),bg="#FFB5C5")
     result_label.pack()
 
     # Iesniegt poga
-    submit_button = tk.Button(submit_frame, text="Pārbaudīt",bg="white", fg="#E75480", width=20, command=lambda: submit_entries(entries, grid[1], result_label))
+    submit_button = tk.Button(submit_frame, text="Pārbaudīt", bg="white", font=('Arial', 9, 'bold'), fg="#E75480", width=17,pady=3, command=lambda: submit_entries(entries, grid[1], result_label))
     submit_button.pack()
 
     # Parādīt atbildes poga logs
-    answers_frame = tk.Frame(frame)
+    answers_frame = tk.Frame(frame,bg="#FFB5C5")
     answers_frame.pack(pady=10)
 
     # Parādīt atbildes poga
-    answers_button = tk.Button(answers_frame, text="Pareizās atbildes",bg="white", fg="#E75480",width=20, command=lambda: display_answers(entries, grid[1]))
+    answers_button = tk.Button(answers_frame, text="Pareizās atbildes",bg="white",font=('Arial', 9, 'bold'), fg="#E75480",width=17,pady=3, command=lambda: display_answers(entries, grid[1]))
     answers_button.pack(pady=1)
     
     # Mēģināt vēlreiz poga
-    again_button = tk.Button(answers_frame, text="Sākt no sākuma",bg="white", fg="#E75480",width=20, command=lambda: try_again(entries, grid[1]))
+    again_button = tk.Button(answers_frame, text="Sākt no sākuma",bg="white",font=('Arial', 9, 'bold'), fg="#E75480",width=17,pady=3, command=lambda: try_again(entries, grid[1],result_label))
     again_button.pack(pady=1)     
     
     new_frame = tk.Frame(frame)
     new_frame.pack(pady=10)
+    new_frame.configure(background='#E75480')
 
     # Jautājumu parādīšanas virsraksts
-    new_label = tk.Label(new_frame, text="Jautājumi:", font=('Helvetica', 11, 'bold'), fg="#E75480",)
+    new_label = tk.Label(new_frame, text="Jautājumi:", font=('Arial', 12, 'bold'),  fg="black", bg="#FFB5C5")
     new_label.pack()  
     
+    
     # divi rāmji priekš jautājumu grupām
-    bottom_labels_frame = tk.Frame(frame)
+    bottom_labels_frame = tk.Frame(frame,bg="#FFB5C5")
     bottom_labels_frame.pack(side=tk.TOP, padx=10, pady=10)
 
     
-    top_labels_frame = tk.Frame(frame)
+    top_labels_frame = tk.Frame(frame,bg="#FFB5C5")
     top_labels_frame.pack(side=tk.TOP, padx=10, pady=10)
     
     #virsraksti
-    nos_text1_label = tk.Label(bottom_labels_frame, text="Horizontāli", font=('Helvetica', 11, 'bold'))
+    nos_text1_label = tk.Label(bottom_labels_frame, text="Horizontāli", font=('Arial', 13, 'bold'),fg="black",  bg="#FFB5C5")
     nos_text1_label.pack()
 
-    nos_text2_label = tk.Label(top_labels_frame, text="Vertikāli", font=('Helvetica', 11, 'bold'))
+    nos_text2_label = tk.Label(top_labels_frame, text="Vertikāli", font=('Arial', 13, 'bold'),fg="black",  bg="#FFB5C5")
     nos_text2_label.pack()
     #iedalījums horizontālajos un vertikālajos
     for item in vardnica1:
@@ -441,11 +452,11 @@ def solve_puzzle_view(frame, puzzle_key):
         label_text = f"{item['number']}{'.'} {item['question']}"
         if item['orientation'] == 0:
             
-            left_label = tk.Label(bottom_labels_frame, text=label_text, font=('Helvetica', 10))
+            left_label = tk.Label(bottom_labels_frame, text=label_text, font=('Arial', 10),fg="black",  bg="#FFB5C5")
             left_label.pack()
         if item['orientation'] == 1:
             
-            right_label = tk.Label(top_labels_frame, text=label_text, font=('Helvetica', 10))
+            right_label = tk.Label(top_labels_frame, text=label_text, font=('Arial', 10),fg="black",  bg="#FFB5C5")
             right_label.pack()
 
     frame.mainloop()
