@@ -134,7 +134,7 @@ def create_puzzle_view(parent_window=None):
     f.pack()
 
     label_style = ttk.Style(window)
-    label_style.configure('CustomLabel.TLabel', font=('Arial', 14, 'bold'), padding=10, foreground='white', background='#E75480')
+    label_style.configure('CustomLabel.TLabel', font=('Arial', 12, 'bold'), padding=10, foreground='white', background='#E75480')
     #button_style = ttk.Style(window)
     #utton_style.configure('CustomButton.TButton', font=('Arial', 12), padding=10, foreground='black', background='red')
 
@@ -145,11 +145,11 @@ def create_puzzle_view(parent_window=None):
     xscrollbar = tk.Scrollbar(f, orient="horizontal", width=20)
     xscrollbar.grid(row=2, column=0, sticky='NSEW')
 
-    ievade = tk.Text(f, height=20, width=45, wrap="none", xscrollcommand=xscrollbar.set, bg='pink')
+    ievade = tk.Text(f, height=20, width=45, wrap="none", xscrollcommand=xscrollbar.set, bg='pink', font=('Arial', 12), fg='#DE3163')
     ievade.grid(row=1, column=0)
     ievade.focus_set()
 
-    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade.get("1.0", tk.END), window), font=('Arial', 12))
+    izveidot_poga = tk.Button(f, text="Izveidot mīklu", command=lambda: get_input(ievade.get("1.0", tk.END), window), font=('Arial', 12), fg='white', bg='#DE3163')
     izveidot_poga.grid(row=12, column=0)
 
     window.mainloop()
