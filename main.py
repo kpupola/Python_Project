@@ -299,11 +299,8 @@ def solve_puzzle_view(frame, puzzle_key):
     vardnica=combine_dict(atbildes, jautajumi)
     grid=populate_grid(vardnica) 
     
-    
     vardnica1 = grid[0]
     
-    
-    print(vardnica)
     if not grid:
         return
 
@@ -312,33 +309,57 @@ def solve_puzzle_view(frame, puzzle_key):
     f = tk.Frame(frame)
     frame.configure(background='#FFB5C5')
     frame.title('Krustvārdu mīklas risināšana')
-    f.pack()
-    
- #izveido krustvārdu mīklas režģi
+    f.pack()   
+           
+        
     def create_window(grid, parent_frame):
         parent_frame.configure(background='#FFB5C5')
         entries = []
+        focusable_entries = []
+
+        def on_arrow_key(event):
+            # Notikumu apstrāde bultu taustiņiem
+            focused_entry = f.focus_get()
+
+            if focused_entry in focusable_entries:
+                current_index = focusable_entries.index(focused_entry)                
+                if event.keysym == "Left":
+                    move_focus(current_index, -1)
+                elif event.keysym == "Right":
+                    move_focus(current_index, 1)
+
+        def move_focus(current_index, offset):
+            # Pārvieto fokusu uz jauno pozīciju
+            new_index = (current_index + offset) % len(focusable_entries)
+            focusable_entries[new_index].focus()
+
         for i, row in enumerate(grid):
             entry_row = []
             for j, value in enumerate(row):
-                if value != ' ': #izveido ievades lauciņus, tur kur nav tukšums
+                if value != ' ':
                     if str(value).isnumeric():
-                        index = tk.Text(parent_frame, width=3, height=1, borderwidth=1, relief="solid", font=('Arial', 10, 'bold'), cursor="arrow")
+                        index = tk.Text(parent_frame, width=3, height=1, borderwidth=1, relief="solid", font=('Helvetica', 10, 'bold'), cursor="arrow", bg="#E75480")
                         index.insert("1.1", value)
-                        index.config(state="disabled", bg="#E75480")
+                        index.config(state="disabled")
                         index.tag_configure("center", justify="center")
                         index.tag_add("center", "1.0", "end")
                         index.grid(row=i, column=j)
-                        entry_row.append('')
                     else:
-                        entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Arial', 12, 'bold'), justify="center")
+                        entry = tk.Entry(parent_frame, width=3, borderwidth=1, relief="solid", font=('Helvetica', 12, 'bold'), justify="center", highlightbackground="#E75480", highlightcolor="#E75480")
                         entry.insert(0, '')  
                         entry.grid(row=i, column=j, padx=1, pady=1)
+                        entry.bind("<Left>", on_arrow_key)
+                        entry.bind("<Right>", on_arrow_key)
                         entry_row.append(entry)
+                        focusable_entries.append(entry)
                 else:
                     entry_row.append('')
             entries.append(entry_row)
-        return entries # Atgriež ievades lauciņu sarakstu
+
+        # Iestata fokusa uz pirmo Entry
+        focusable_entries[0].focus()
+
+        return entries
 
     #funkcija saglabās ievades vērtības un pārbauda vai tās sakrīt ar atbildēm
     def submit_entries(entries, grid, result_label):
