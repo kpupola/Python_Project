@@ -217,9 +217,10 @@ def choose_puzzle_view():
     window = tk.Toplevel(root)
     window.minsize(600, 500)
     window.title('Krustvārdu mīklu izvēle')
+    window.configure(background='#E75480')
 
-    f = tk.Frame(window)
-    f.pack()
+    f = ttk.Frame(window)
+    f.pack(pady=50, padx=100, fill='both', expand=True)
 
     def refresh_frame():
         # atjauno skatu ar jaunāko info no faila
@@ -237,10 +238,18 @@ def choose_puzzle_view():
         clear_file()
         refresh_frame()
 
+
 #Funkcija, kas atgriež sarakstu ar izveidotajām puzlēm, no kura vienu var izvēlēties
     def display_frame():
-        izvelies_miklu = tk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!", font=("Helvetica", 14), fg="#E75480", pady=10)
-        izvelies_miklu.grid(row=0, column=0)
+        style = ttk.Style(window)
+        style.configure('TButton', font=('Arial', 14), padding=10, foreground='black', background='#C21807')
+        style.configure('TLabel', font=('Arial', 18, 'bold'), padding=5, foreground='white', background='#E75480')
+        style.configure('Pink.TButton', font=('Arial', 14,'bold'), padding=10, foreground='black', background='#E75480')
+        style.configure('Red.TButton', font=('Arial', 14), padding=10, foreground='#8B0000', background='#E75480')
+
+        izvelies_miklu = ttk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!", style='TLabel')
+        izvelies_miklu.grid(row=0, column=0, columnspan=5, pady=10)
+
         miklu_nosakumi = return_keys()
         for i in range(len(miklu_nosakumi)):
             def on_enter(event):
@@ -249,28 +258,26 @@ def choose_puzzle_view():
             def on_leave(event):
                 event.widget.config(bg="#E75480", fg="white")
             # poga, kas aizved uz mīklas risināšanas logu
-            solve_but = tk.Button(f, text=miklu_nosakumi[i], command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key), bg="#E75480", fg="white")
-            solve_but.grid(row=i + 2, column=0, pady=2)
-            
-            solve_but.bind("<Enter>", on_enter)
-            solve_but.bind("<Leave>", on_leave)
-
+            solve_but = ttk.Button(f, text=miklu_nosakumi[i].upper(), command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key), style='TButton')
+            solve_but.grid(row=i + 2, column=1, pady=5, padx=10)
 
             if miklu_nosakumi[i] != "Izmēģinājuma mīkla":
                 
                 # poga, kas aizved uz mīklas rediģēšanas logu
-                update_but = tk.Button(f, text="Rediģēt mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: update_puzzle_view(window, puzzle_key), bg="white", fg="black")
-                update_but.grid(row=i + 2, column=1, padx=3)
+                update_but = ttk.Button(f, text="Rediģēt mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: update_puzzle_view(window, puzzle_key), style='TButton')
+                update_but.grid(row=i + 2, column=4, pady=5, padx=10)
+                update_but.configure(style='Red.TButton')
 
                 # poga, kas izdzēš mīklu no saraksta
-                delete_but = tk.Button(f, text="Izdzēst mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: delete_puzzle_refresh(puzzle_key), bg="white", fg="black")
-                delete_but.grid(row=i + 2, column=2, padx=3)
+                delete_but = ttk.Button(f, text="Izdzēst mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: delete_puzzle_refresh(puzzle_key), style='TButton')
+                delete_but.grid(row=i + 2, column=2, pady=5, padx=10)
+                delete_but.configure(style='Red.TButton')
 
-        delete_all_but = tk.Button(f, text="Izdzēst visas mīklas no saraksta", command=clear_list, bg="white", fg="#E75480", font=("Helvetica", 9), pady=3, padx=5)
-        
+        delete_all_but = ttk.Button(f, text="Izdzēst visas mīklas", command=clear_list, style='TButton')
         if len(miklu_nosakumi) == 1:
             delete_all_but.config(state="disabled")
-        delete_all_but.grid(row=1, column=0, pady=15, padx=5)
+        delete_all_but.grid(row=2, column=2, pady=10, columnspan=3)
+        delete_all_but.configure(style='Pink.TButton')
     
     display_frame()
 
@@ -461,15 +468,12 @@ def main():
     style.configure('TLabel', font=('Arial', 20, 'bold'), padding=5, foreground='white', background='#E75480')
     style.configure('TFrame', background='#E75480')
 
-    # Main Frame
     main_frame = ttk.Frame(root)
     main_frame.pack(pady=50, padx=100, fill='both', expand=True)
 
-    # Title Label
-    title_label = ttk.Label(main_frame, text="Krustvārdu mīklas", style='TLabel')
+    title_label = ttk.Label(main_frame, text="Krustvārdu mīklas".upper(), style='TLabel')
     title_label.pack(pady=20)
 
-    # Buttons
     izveidot_miklu_poga = ttk.Button(main_frame, text="Izveidot jaunu krustvārdu mīklu", command=create_puzzle_view)
     izveidot_miklu_poga.pack(pady=10, padx=50, fill='x')
 
