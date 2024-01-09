@@ -215,7 +215,7 @@ def update_puzzle_view(parent_window, puzzle_key):
 
 def choose_puzzle_view():
     window = tk.Toplevel(root)
-    window.minsize(500, 500)
+    window.minsize(600, 500)
     window.title('Krustvārdu mīklu izvēle')
 
     f = tk.Frame(window)
@@ -239,27 +239,38 @@ def choose_puzzle_view():
 
 #Funkcija, kas atgriež sarakstu ar izveidotajām puzlēm, no kura vienu var izvēlēties
     def display_frame():
-        izvelies_miklu = tk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!")
+        izvelies_miklu = tk.Label(f, text="Izvēlies kādu no esošajām mīklām, ko risināt!", font=("Helvetica", 14), fg="#E75480", pady=10)
         izvelies_miklu.grid(row=0, column=0)
         miklu_nosakumi = return_keys()
         for i in range(len(miklu_nosakumi)):
+            def on_enter(event):
+                event.widget.config(bg="white", fg="#E75480") 
+
+            def on_leave(event):
+                event.widget.config(bg="#E75480", fg="white")
             # poga, kas aizved uz mīklas risināšanas logu
-            solve_but = tk.Button(f, text=miklu_nosakumi[i], command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key))
-            solve_but.grid(row=i + 2, column=0)
+            solve_but = tk.Button(f, text=miklu_nosakumi[i], command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key), bg="#E75480", fg="white")
+            solve_but.grid(row=i + 2, column=0, pady=2)
+            
+            solve_but.bind("<Enter>", on_enter)
+            solve_but.bind("<Leave>", on_leave)
+
 
             if miklu_nosakumi[i] != "Izmēģinājuma mīkla":
+                
                 # poga, kas aizved uz mīklas rediģēšanas logu
-                update_but = tk.Button(f, text="Rediģēt mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: update_puzzle_view(window, puzzle_key))
-                update_but.grid(row=i + 2, column=1)
+                update_but = tk.Button(f, text="Rediģēt mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: update_puzzle_view(window, puzzle_key), bg="white", fg="black")
+                update_but.grid(row=i + 2, column=1, padx=3)
 
                 # poga, kas izdzēš mīklu no saraksta
-                delete_but = tk.Button(f, text="Izdzēst mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: delete_puzzle_refresh(puzzle_key))
-                delete_but.grid(row=i + 2, column=2)
+                delete_but = tk.Button(f, text="Izdzēst mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: delete_puzzle_refresh(puzzle_key), bg="white", fg="black")
+                delete_but.grid(row=i + 2, column=2, padx=3)
 
-        delete_all_but = tk.Button(f, text="Izdzēst visas mīklas no saraksta", command=clear_list)
+        delete_all_but = tk.Button(f, text="Izdzēst visas mīklas no saraksta", command=clear_list, bg="white", fg="#E75480", font=("Helvetica", 9), pady=3, padx=5)
+        
         if len(miklu_nosakumi) == 1:
             delete_all_but.config(state="disabled")
-        delete_all_but.grid(row=1, column=0)
+        delete_all_but.grid(row=1, column=0, pady=15, padx=5)
     
     display_frame()
 
@@ -268,6 +279,7 @@ def choose_puzzle_view():
     
 #Funkcija, kas atver krustvārdu mīklas risināšanas skatu
 def solve_puzzle_view(frame, puzzle_key):
+    
     #Izsauc funkcijas, kas atgriež atbildes, jautājumus un funkcija, kas saliek kopā tos vārdnīcas formātā
     atbildes=return_answers(puzzle_key)
     jautajumi=return_questions(puzzle_key)
@@ -283,6 +295,7 @@ def solve_puzzle_view(frame, puzzle_key):
         return
 
     frame = tk.Toplevel(root)
+    frame.minsize(600, 500)
     f = tk.Frame(frame)
     frame.title('Krustvārdu mīklas risināšana')
     f.pack()
@@ -335,9 +348,9 @@ def solve_puzzle_view(frame, puzzle_key):
                     entries[i][j].config(bg="red")
         # pārbauda vai ir pareizi un uzvarēšanas paziņojums
         if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' ' and entries[i][j] != ''):
-            result_label.config(text="Congratulations! You win!", fg="red")
+            result_label.config(text="Apsveicam! Tu uzvarēji!", fg="green")
         else:
-            result_label.config(text="Incorrect input! Try again.", fg="red")
+            result_label.config(text="Nepareizi! Mēģini vēlreiz.", fg="red")
 
 #parāda atbildes
     def display_answers(entries, grid):
@@ -373,7 +386,7 @@ def solve_puzzle_view(frame, puzzle_key):
     result_label.pack()
 
     # Iesniegt poga
-    submit_button = tk.Button(submit_frame, text="Check", command=lambda: submit_entries(entries, grid[1], result_label))
+    submit_button = tk.Button(submit_frame, text="Pārbaudīt",bg="white", fg="#E75480", width=20, command=lambda: submit_entries(entries, grid[1], result_label))
     submit_button.pack()
 
     # Parādīt atbildes poga logs
@@ -381,18 +394,18 @@ def solve_puzzle_view(frame, puzzle_key):
     answers_frame.pack(pady=10)
 
     # Parādīt atbildes poga
-    answers_button = tk.Button(answers_frame, text="Display Answers", command=lambda: display_answers(entries, grid[1]))
-    answers_button.pack()
+    answers_button = tk.Button(answers_frame, text="Pareizās atbildes",bg="white", fg="#E75480",width=20, command=lambda: display_answers(entries, grid[1]))
+    answers_button.pack(pady=1)
     
     # Mēģināt vēlreiz poga
-    again_button = tk.Button(answers_frame, text="Try again", command=lambda: try_again(entries, grid[1]))
-    again_button.pack()     
+    again_button = tk.Button(answers_frame, text="Sākt no sākuma",bg="white", fg="#E75480",width=20, command=lambda: try_again(entries, grid[1]))
+    again_button.pack(pady=1)     
     
     new_frame = tk.Frame(frame)
     new_frame.pack(pady=10)
 
     # Jautājumu parādīšanas virsraksts
-    new_label = tk.Label(new_frame, text="Jautājumi")
+    new_label = tk.Label(new_frame, text="Jautājumi:", font=('Helvetica', 11, 'bold'), fg="#E75480",)
     new_label.pack()  
     
     # divi rāmji priekš jautājumu grupām
