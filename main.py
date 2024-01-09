@@ -215,7 +215,7 @@ def update_puzzle_view(parent_window, puzzle_key):
 
 def choose_puzzle_view():
     window = tk.Toplevel(root)
-    window.minsize(500, 500)
+    window.minsize(600, 500)
     window.title('Krustvārdu mīklu izvēle')
     window.configure(background='#E75480')
 
@@ -252,11 +252,17 @@ def choose_puzzle_view():
 
         miklu_nosakumi = return_keys()
         for i in range(len(miklu_nosakumi)):
+            def on_enter(event):
+                event.widget.config(bg="white", fg="#E75480") 
+
+            def on_leave(event):
+                event.widget.config(bg="#E75480", fg="white")
             # poga, kas aizved uz mīklas risināšanas logu
             solve_but = ttk.Button(f, text=miklu_nosakumi[i].upper(), command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key), style='TButton')
             solve_but.grid(row=i + 2, column=1, pady=5, padx=10)
 
             if miklu_nosakumi[i] != "Izmēģinājuma mīkla":
+                
                 # poga, kas aizved uz mīklas rediģēšanas logu
                 update_but = ttk.Button(f, text="Rediģēt mīklu", command=lambda puzzle_key = miklu_nosakumi[i]: update_puzzle_view(window, puzzle_key), style='TButton')
                 update_but.grid(row=i + 2, column=4, pady=5, padx=10)
@@ -280,6 +286,7 @@ def choose_puzzle_view():
     
 #Funkcija, kas atver krustvārdu mīklas risināšanas skatu
 def solve_puzzle_view(frame, puzzle_key):
+    
     #Izsauc funkcijas, kas atgriež atbildes, jautājumus un funkcija, kas saliek kopā tos vārdnīcas formātā
     atbildes=return_answers(puzzle_key)
     jautajumi=return_questions(puzzle_key)
@@ -295,6 +302,7 @@ def solve_puzzle_view(frame, puzzle_key):
         return
 
     frame = tk.Toplevel(root)
+    frame.minsize(600, 500)
     f = tk.Frame(frame)
     frame.title('Krustvārdu mīklas risināšana')
     f.pack()
@@ -347,9 +355,9 @@ def solve_puzzle_view(frame, puzzle_key):
                     entries[i][j].config(bg="red")
         # pārbauda vai ir pareizi un uzvarēšanas paziņojums
         if all(value == entered_values[i][j] for i, row in enumerate(grid) for j, value in enumerate(row) if value != ' ' and entries[i][j] != ''):
-            result_label.config(text="Congratulations! You win!", fg="red")
+            result_label.config(text="Apsveicam! Tu uzvarēji!", fg="green")
         else:
-            result_label.config(text="Incorrect input! Try again.", fg="red")
+            result_label.config(text="Nepareizi! Mēģini vēlreiz.", fg="red")
 
 #parāda atbildes
     def display_answers(entries, grid):
@@ -385,7 +393,7 @@ def solve_puzzle_view(frame, puzzle_key):
     result_label.pack()
 
     # Iesniegt poga
-    submit_button = tk.Button(submit_frame, text="Check", command=lambda: submit_entries(entries, grid[1], result_label))
+    submit_button = tk.Button(submit_frame, text="Pārbaudīt",bg="white", fg="#E75480", width=20, command=lambda: submit_entries(entries, grid[1], result_label))
     submit_button.pack()
 
     # Parādīt atbildes poga logs
@@ -393,18 +401,18 @@ def solve_puzzle_view(frame, puzzle_key):
     answers_frame.pack(pady=10)
 
     # Parādīt atbildes poga
-    answers_button = tk.Button(answers_frame, text="Display Answers", command=lambda: display_answers(entries, grid[1]))
-    answers_button.pack()
+    answers_button = tk.Button(answers_frame, text="Pareizās atbildes",bg="white", fg="#E75480",width=20, command=lambda: display_answers(entries, grid[1]))
+    answers_button.pack(pady=1)
     
     # Mēģināt vēlreiz poga
-    again_button = tk.Button(answers_frame, text="Try again", command=lambda: try_again(entries, grid[1]))
-    again_button.pack()     
+    again_button = tk.Button(answers_frame, text="Sākt no sākuma",bg="white", fg="#E75480",width=20, command=lambda: try_again(entries, grid[1]))
+    again_button.pack(pady=1)     
     
     new_frame = tk.Frame(frame)
     new_frame.pack(pady=10)
 
     # Jautājumu parādīšanas virsraksts
-    new_label = tk.Label(new_frame, text="Jautājumi")
+    new_label = tk.Label(new_frame, text="Jautājumi:", font=('Helvetica', 11, 'bold'), fg="#E75480",)
     new_label.pack()  
     
     # divi rāmji priekš jautājumu grupām
