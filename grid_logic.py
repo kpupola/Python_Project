@@ -30,7 +30,7 @@ def return_grid_string(rezgis):
     for i in range(GRID_SIZE):
         rinda_str = ''
         for j in range(GRID_SIZE):
-            rinda_str = rinda_str + ' ' + str(rezgis[i][j])
+            rinda_str = rinda_str + str(rezgis[i][j])
         if not rinda_str.isspace():
             grid_str += rinda_str + '\n'
     return grid_str

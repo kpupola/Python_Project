@@ -45,73 +45,87 @@ def generate_puzzle_view(parent_window, atbildes_un_jautajumi, miklas_nosaukums=
 
     window = tk.Toplevel(root)
     window.minsize(500, 500)
+    window.configure(background='#E75480')
 
-    f = tk.Frame(window, bg="#f3f4f6")  
-    f.pack(padx=20, pady=20)  
+    f = tk.Frame(window, bg="#E75480")  
+    f.grid(row=1, column=0, padx=20, pady=20) 
 
-    # f = tk.Frame(window)
-    # f.pack()
-    grid_box = tk.Text(f, width=60, height=40)
-
-    #izprintē pirmo variantu režģim no lietotāja ievadītajiem vārdiem
+    def refresh_frame():
+        # atjauno skatu ar jaunāko info no faila
+        for item in f.winfo_children():
+            item.destroy()
+    
     saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
     return_values = populate_grid(saraksts)
-    #cikls, kas nodrošina, ka tik attēloti tikai režģi, kas ir izdevušies
+
+    # cikls, kas nodrošina, ka tikai izdevušies režģi tiek izprintēti
     fail_count = 0
     while not return_values:
-            saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
-            return_values = populate_grid(saraksts)
-            fail_count += 1
-            if fail_count == 30:
-                grid_box.insert("1.0", "Ar šo vārdu sarakstu nav izdevies izveidot režģi, mēģini ievadīt citus vārdus.")
-                grid_box.config(width=40, height=5, wrap="word", state="disabled", bg="#e0777e")
-                break
-    
-    if return_values: # ja ir saņemts izdevies režģis
-        grid = return_values[1]
-        grid_box.insert("1.0", return_grid_string(grid)) 
-        grid_box.config(state="disabled")
-
-    grid_box.grid(row=0, column=0) # izvieto teksta lauku
-
-    # Funkcija, kas ievieto teksta laukā dažādus variantus režģim
-    def print_rezgis():
-        grid_box.config(state="normal")
-        grid_box.delete("1.0", tk.END)
-        
-        #izprintē variantu režģim no lietotāja ievadītajiem vārdiem
-        saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
+        saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
         return_values = populate_grid(saraksts)
-
-        while not return_values: # nodrošina, ka tiek izprintēti tikai režģi, kas ir izdevušies
-            saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
+        fail_count += 1
+        if fail_count == 30:
+            label = tk.Label(f, text="Ar šo vārdu sarakstu nav izdevies izveidot režģi, mēģini ievadīt citus vārdus.")
+            label.grid(row=0, column=0)
+            break
+    
+    def shuffle_grid():
+        saraksts = shuffle_keys(atbildes_un_jautajumi.copy())
+        return_values = populate_grid(saraksts)
+        while not return_values:
+            saraksts = shuffle_keys(atbildes_un_jautajumi.copy()) 
             return_values = populate_grid(saraksts)
-        
-        if return_values: # ja ir saņemts izdevies režģis
-            grid = return_values[1]
-            grid_box.insert("1.0", return_grid_string(grid))
-            grid_box.config(state="disabled")
-            grid_box.focus_set()
-            grid_box.grid(row=0, column=0)
-        else:
-            grid_box.insert("1.0", "Nesanāca :(")
-            grid_box.config(state="disabled")
+        print_rezgis(return_values[1])
+
+
+    def print_rezgis(grid):
+        refresh_frame()
+        entries = []
+        for i, row in enumerate(grid):
+            entry_row = []
+            for j, value in enumerate(row):
+                if value != ' ': #izveido ievades lauciņus, tur kur nav tukšums
+                    if str(value).isnumeric():
+                        index = tk.Text(f, width=3, height=1, borderwidth=1, relief="solid", font=('Arial', 10, 'bold'), cursor="arrow")
+                        index.insert("1.1", value)
+                        index.config(state="disabled", bg="#eb96af", cursor="arrow")
+                        index.tag_configure("center", justify="center")
+                        index.tag_add("center", "1.0", "end")
+                        index.grid(row=i, column=j)
+                        entry_row.append('')
+                    else:
+                        entry = tk.Text(f, width=3, height=1, borderwidth=1, relief="solid", font=('Arial', 12, 'bold'))
+                        entry.insert("1.1", value)  
+                        entry.tag_configure("center", justify="center")
+                        entry.tag_add("center", "1.0", "end")
+                        entry.grid(row=i, column=j, padx=1, pady=1)
+                        entry.config(state="disabled", cursor="arrow")
+                        entry_row.append(entry)
+                else:
+                    entry_row.append('')
+            entries.append(entry_row)
+
+    if return_values: # ja ir saņemts izdevies režģis
+        print_rezgis(return_values[1])
+
+    pogas = tk.Frame(window, bg="#E75480")
+    pogas.grid(row=0, column=0, sticky="NSEW", padx=20, pady=20)
 
     if return_values: # ja ir saņemts izdevies režģis
         # poga, ar kuru izsauc print_rezgis(), kas uzģenerēs citu izkārtojumu
-        shuffle_poga = tk.Button(f, text="Izveidot citu izkārtojumu", command=print_rezgis)
-        shuffle_poga.grid(row=1, column=0)
+        shuffle_poga = ttk.Button(pogas, text="Izveidot citu izkārtojumu", command=shuffle_grid, style='TButton')
+        shuffle_poga.grid(row=1, column=0, sticky="NSEW", padx=20, pady=20)
 
         # poga, ar kuru tiks saglabāts esošais variants režģim
-        save_poga = tk.Button(f, text="Saglabāt", command=lambda: get_title_and_save(window, return_values[0], miklas_nosaukums))
-        save_poga.grid(row=1, column=1) 
+        save_poga = ttk.Button(pogas, text="Saglabāt", command=lambda: get_title_and_save(window, return_values[0], miklas_nosaukums), style='TButton')
+        save_poga.grid(row=1, column=1, sticky="E", padx=20, pady=20) 
     else:
         # ja nav izdevies izveidot veiksmīgu režģi
-        atpakal_poga = tk.Button(f, text="Atgriezties uz vārdu ievadi", command= lambda: create_puzzle_view(window))
-        atpakal_poga.grid(row=1, column=0)
+        atpakal_poga = ttk.Button(pogas, text="Atgriezties uz vārdu ievadi", command= lambda: create_puzzle_view(window), style='TButton')
+        atpakal_poga.grid(row=1, column=1, padx=20, pady=30)
 
-    close_poga = tk.Button(f, text="Aizvērt logu", command=lambda: close_top(window))
-    close_poga.grid(row=2, column=0)
+    close_poga = ttk.Button(pogas, text="Aizvērt logu", command=lambda: close_top(window), style='TButton')
+    close_poga.grid(row=2, column=0, columnspan=2)
     window.mainloop()
     return
 
@@ -252,11 +266,7 @@ def choose_puzzle_view():
 
         miklu_nosakumi = return_keys()
         for i in range(len(miklu_nosakumi)):
-            def on_enter(event):
-                event.widget.config(bg="white", fg="#E75480") 
 
-            def on_leave(event):
-                event.widget.config(bg="#E75480", fg="white")
             # poga, kas aizved uz mīklas risināšanas logu
             solve_but = ttk.Button(f, text=miklu_nosakumi[i].upper(), command=lambda puzzle_key = miklu_nosakumi[i]: solve_puzzle_view(window, puzzle_key), style='TButton')
             solve_but.grid(row=i + 2, column=1, pady=5, padx=10)
@@ -292,12 +302,8 @@ def solve_puzzle_view(frame, puzzle_key):
     jautajumi=return_questions(puzzle_key)
     vardnica=combine_dict(atbildes, jautajumi)
     grid=populate_grid(vardnica) 
-    
-    
     vardnica1 = grid[0]
-    
-    
-    print(vardnica)
+
     if not grid:
         return
 
@@ -389,9 +395,6 @@ def solve_puzzle_view(frame, puzzle_key):
     # Iesniegt pogas logs
     submit_frame = tk.Frame(frame,bg="#FFB5C5")
     submit_frame.pack(pady=10)
-    
-    
-    
 
     # Rezultāta etiķetes logs
     result_frame = tk.Frame(frame)
@@ -425,11 +428,9 @@ def solve_puzzle_view(frame, puzzle_key):
     new_label = tk.Label(new_frame, text="Jautājumi:", font=('Arial', 12, 'bold'),  fg="black", bg="#FFB5C5")
     new_label.pack()  
     
-    
     # divi rāmji priekš jautājumu grupām
     bottom_labels_frame = tk.Frame(frame,bg="#FFB5C5")
     bottom_labels_frame.pack(side=tk.TOP, padx=10, pady=10)
-
     
     top_labels_frame = tk.Frame(frame,bg="#FFB5C5")
     top_labels_frame.pack(side=tk.TOP, padx=10, pady=10)
@@ -440,16 +441,14 @@ def solve_puzzle_view(frame, puzzle_key):
 
     nos_text2_label = tk.Label(top_labels_frame, text="Vertikāli", font=('Arial', 13, 'bold'),fg="black",  bg="#FFB5C5")
     nos_text2_label.pack()
+
     #iedalījums horizontālajos un vertikālajos
     for item in vardnica1:
-        
         label_text = f"{item['number']}{'.'} {item['question']}"
         if item['orientation'] == 0:
-            
             left_label = tk.Label(bottom_labels_frame, text=label_text, font=('Arial', 10),fg="black",  bg="#FFB5C5")
             left_label.pack()
         if item['orientation'] == 1:
-            
             right_label = tk.Label(top_labels_frame, text=label_text, font=('Arial', 10),fg="black",  bg="#FFB5C5")
             right_label.pack()
 
@@ -457,16 +456,16 @@ def solve_puzzle_view(frame, puzzle_key):
     return
 
 root = tk.Tk()
+style = ttk.Style(root)
+style.configure('TButton', font=('Arial', 14), padding=10, foreground='#A94064', corner_radius=10)
+style.configure('TLabel', font=('Arial', 20, 'bold'), padding=5, foreground='white', background='#E75480')
+style.configure('TFrame', background='#E75480')
+
 def main():
 
     root.minsize(500, 500)
     root.title('Krustvārdu mīklas')
     root.configure(background='#E75480')
-
-    style = ttk.Style(root)
-    style.configure('TButton', font=('Arial', 14), padding=10, foreground='#A94064', corner_radius=10)
-    style.configure('TLabel', font=('Arial', 20, 'bold'), padding=5, foreground='white', background='#E75480')
-    style.configure('TFrame', background='#E75480')
 
     main_frame = ttk.Frame(root)
     main_frame.pack(pady=50, padx=100, fill='both', expand=True)
