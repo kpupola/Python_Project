@@ -440,15 +440,15 @@ def solve_puzzle_view(frame, puzzle_key):
 
 root = tk.Tk()
 def main():
-    
+
     root.minsize(500, 500)
     root.title('Krustvārdu mīklas')
-    root.configure(background='pink')
+    root.configure(background='#E75480')
 
     style = ttk.Style(root)
-    style.configure('TButton', font=('Arial', 14), padding=10, foreground='black')
-    style.configure('TLabel', font=('Arial', 20, 'bold'), padding=5, foreground='white', background='pink')
-    style.configure('TFrame', background='pink')
+    style.configure('TButton', font=('Arial', 14), padding=10, foreground='#A94064', corner_radius=10)
+    style.configure('TLabel', font=('Arial', 20, 'bold'), padding=5, foreground='white', background='#E75480')
+    style.configure('TFrame', background='#E75480')
 
     # Main Frame
     main_frame = ttk.Frame(root)
